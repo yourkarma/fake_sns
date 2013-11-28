@@ -5,6 +5,8 @@ A small web app for local SNS development.
 This app contains a web interface that lists all the messages sent to it. You
 can also edit the messages and send them to an SQS queue of your chosing.
 
+**NB** Very far from being useful.
+
 ### Noteworthy differences:
 
 * No checking of access keys.
