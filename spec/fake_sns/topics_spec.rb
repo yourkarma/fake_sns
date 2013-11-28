@@ -26,4 +26,11 @@ describe "CreateTopic" do
     expect(sns.topics.map(&:arn)).to match_array [topic1.arn, topic2.arn]
   end
 
+  it "deletes topics" do
+    topic = sns.topics.create("my-topic")
+    expect(sns.topics.map(&:arn)).to eq [topic.arn]
+    sns.topics[topic.arn].delete
+    expect(sns.topics.map(&:arn)).to eq []
+  end
+
 end

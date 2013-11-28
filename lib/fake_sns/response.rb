@@ -9,7 +9,7 @@ module FakeSNS
     end
 
     def template
-      __getobj__.class.name.to_s.split("::").last.gsub(/[A-Z]/){|m| "_#{m[0].downcase}"}.sub(/_/, '') + "_response"
+      __getobj__.class.name.to_s.split("::").last.gsub(/[A-Z]/){|m| "_#{m[0].downcase}"}.sub(/_/, '')
     end
 
   end

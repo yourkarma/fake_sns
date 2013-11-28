@@ -24,7 +24,7 @@ module FakeSNS
       rescue Exception => error
         error_response = ErrorResponse.new(error, params)
         status error_response.status
-        erb :"error_response.xml", scope: error_response
+        erb :"error.xml", scope: error_response
       end
     end
 

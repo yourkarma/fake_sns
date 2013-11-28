@@ -14,6 +14,7 @@ can also edit the messages and send them to an SQS queue of your chosing.
 
 * CreateTopic
 * ListTopics
+* DeleteTopic
 
 ### Actions to be implemented:
 
@@ -23,7 +24,6 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * CreatePlatformEndpoint
 * DeleteEndpoint
 * DeletePlatformApplication
-* DeleteTopic
 * GetEndpointAttributes
 * GetPlatformApplicationAttributes
 * GetSubscriptionAttributes

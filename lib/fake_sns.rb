@@ -14,6 +14,7 @@ require "fake_sns/action"
 
 require "fake_sns/actions/create_topic"
 require "fake_sns/actions/list_topics"
+require "fake_sns/actions/delete_topic"
 
 module FakeSNS
 
