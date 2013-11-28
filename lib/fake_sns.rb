@@ -1,12 +1,20 @@
-require "bundler/setup"
-Bundler.require(:default, ENV["RACK_ENV"] || "development")
-
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
-module FakeSNS
+require "aws-sdk"
+require "fake_sns/error"
+require "fake_sns/error_response"
 
-  def self.load!
-  end
+require "fake_sns/database"
+require "fake_sns/topic"
+
+require "fake_sns/response"
+
+require "fake_sns/action"
+
+require "fake_sns/actions/create_topic"
+require "fake_sns/actions/list_topics"
+
+module FakeSNS
 
 end

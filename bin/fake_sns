@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'fake_sns/server'
+require 'optparse'
+
+options = { :port => 9292, :host => "0.0.0.0", :verbose => false, :daemonize => false }
+
+parser = OptionParser.new do |o|
+
+  o.on "-p", "--port PORT", Integer, "Port to use (default: #{options[:port]})" do |port|
+    options[:port] = port
+  end
+
+  o.on "-o", "--bind HOST", "Host to bind to (default: 0.0.0.0)" do |host|
+    options[:host] = host
+  end
+
+  o.on "-s", "--server SERVER", ['thin', 'mongrel', 'webrick'], "Server to use: thin, mongrel or webrick (by default Sinatra chooses the best available)" do |server|
+    options[:server] = server
+  end
+
+  o.on "-P", "--pid PIDFILE", "Where to write the pid" do |pid|
+    options[:pid] = pid
+  end
+
+  o.on "-d", "--[no-]daemonize", "Detaches the process" do |daemonize|
+    options[:daemonize] = daemonize
+  end
+
+  o.on "-v", "--[no]-verbose", "Shows input parameters and output XML" do |verbose|
+    options[:verbose] = verbose
+  end
+
+  o.on_tail "--version", "Shows the version" do
+    puts "fake_sns version #{FakeSNS::VERSION}"
+    exit
+  end
+
+  o.on_tail "-h", "--help", "Shows this help page" do
+    puts o
+    exit
+  end
+
+end
+
+parser.parse!
+
+app = FakeSNS::Server
+
+if options[:daemonize]
+  Process.daemon(true, true)
+end
+
+if (pid = options[:pid])
+  if File.exist?(pid)
+    existing_pid = File.open(pid, 'r').read.chomp.to_i
+    running = Process.getpgid(existing_pid) rescue false
+    if running
+      warn "Error, Process #{existing_pid} already running"
+      exit 1
+    else
+      warn "Cleaning up stale pid at #{pid}"
+    end
+  end
+  File.open(pid, 'w') { |f| f.write(Process.pid) }
+end
+
+app.set :port, options[:port]
+app.set :bind, options[:host]
+app.set :server, options[:server] if options[:server]
+app.run!

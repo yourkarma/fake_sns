@@ -8,10 +8,12 @@ can also edit the messages and send them to an SQS queue of your chosing.
 ### Noteworthy differences:
 
 * No checking of access keys.
+* Returns more than 100 topics, no support for `NextToken` parameter.
 
 ### Implemented:
 
-Nothing
+* CreateTopic
+* ListTopics
 
 ### Actions to be implemented:
 
@@ -19,7 +21,6 @@ Nothing
 * ConfirmSubscription
 * CreatePlatformApplication
 * CreatePlatformEndpoint
-* CreateTopic
 * DeleteEndpoint
 * DeletePlatformApplication
 * DeleteTopic
@@ -31,7 +32,6 @@ Nothing
 * ListPlatformApplications
 * ListSubscriptions
 * ListSubscriptionsByTopic
-* ListTopics
 * Publish
 * RemovePermission
 * SetEndpointAttributes
@@ -73,3 +73,10 @@ AWS.config(
   sns_port:      9292,
 )
 ```
+
+---
+
+## More information
+
+* [API Reference](http://docs.aws.amazon.com/sns/latest/api/API_Operations.html)
+* [AWS-SDK docs](http://rubydoc.info/gems/aws-sdk/frames)
