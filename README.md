@@ -15,6 +15,8 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * CreateTopic
 * ListTopics
 * DeleteTopic
+* GetTopicAttributes
+* SetTopicAttributes
 
 ### Actions to be implemented:
 
@@ -27,7 +29,6 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * GetEndpointAttributes
 * GetPlatformApplicationAttributes
 * GetSubscriptionAttributes
-* GetTopicAttributes
 * ListEndpointsByPlatformApplication
 * ListPlatformApplications
 * ListSubscriptions
@@ -37,7 +38,6 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * SetEndpointAttributes
 * SetPlatformApplicationAttributes
 * SetSubscriptionAttributes
-* SetTopicAttributes
 * Subscribe
 * Unsubscribe
 

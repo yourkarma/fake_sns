@@ -12,9 +12,11 @@ require "fake_sns/response"
 
 require "fake_sns/action"
 
-require "fake_sns/actions/create_topic"
-require "fake_sns/actions/list_topics"
-require "fake_sns/actions/delete_topic"
+# load all the actions
+action_files = File.expand_path("../fake_sns/actions/*.rb", __FILE__)
+Dir.glob(action_files).each do |file|
+  require file
+end
 
 module FakeSNS
 

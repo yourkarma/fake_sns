@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "CreateTopic" do
+describe "Topics" do
 
   it "rejects invalid characters in topic names" do
     expect {
@@ -31,6 +31,14 @@ describe "CreateTopic" do
     expect(sns.topics.map(&:arn)).to eq [topic.arn]
     sns.topics[topic.arn].delete
     expect(sns.topics.map(&:arn)).to eq []
+  end
+
+  it "can set and read attributes" do
+    topic = sns.topics.create("my-topic")
+    expect(topic.display_name).to eq "my-topic"
+    topic.display_name = "the display name"
+    expect(topic.display_name).to eq "the display name"
+    expect(topic.name).to eq "my-topic"
   end
 
 end

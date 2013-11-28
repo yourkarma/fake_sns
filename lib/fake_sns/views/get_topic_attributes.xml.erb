@@ -1,0 +1,15 @@
+<GetTopicAttributesResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+  <GetTopicAttributesResult>
+    <Attributes>
+      <% each_attribute do |key, value| %>
+      <entry>
+        <key><%= key %></key>
+        <value><%= value %></value>
+      </entry>
+      <% end %>
+    </Attributes>
+  </GetTopicAttributesResult>
+  <ResponseMetadata>
+    <RequestId><%= request_id %></RequestId>
+  </ResponseMetadata>
+</GetTopicAttributesResponse>
