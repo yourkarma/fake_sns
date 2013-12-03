@@ -11,6 +11,10 @@ module FakeSNS
       @topics ||= {}
     end
 
+    def subscriptions
+      @subscriptions ||= []
+    end
+
     def reset
       @topics = {}
     end

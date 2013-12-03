@@ -1,0 +1,18 @@
+<ListSubscriptionsResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+  <ListSubscriptionsResult>
+    <Subscriptions>
+      <% each_subscription do |subscription| %>
+        <member>
+          <TopicArn><%= subscription.topic_arn %></TopicArn>
+          <Protocol><%= subscription.protocol %></Protocol>
+          <SubscriptionArn><%= subscription.arn %></SubscriptionArn>
+          <Owner><%= subscription.owner %></Owner>
+          <Endpoint><%= subscription.endpoint %></Endpoint>
+        </member>
+      <% end %>
+    </Subscriptions>
+  </ListSubscriptionsResult>
+  <ResponseMetadata>
+    <RequestId><%= request_id %></RequestId>
+  </ResponseMetadata>
+</ListSubscriptionsResponse>
