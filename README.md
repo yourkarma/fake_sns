@@ -20,6 +20,10 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * GetTopicAttributes
 * SetTopicAttributes
 
+### Under Construction
+
+* Publish
+
 ### Actions to be implemented:
 
 * AddPermission
@@ -35,7 +39,6 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * ListPlatformApplications
 * ListSubscriptions
 * ListSubscriptionsByTopic
-* Publish
 * RemovePermission
 * SetEndpointAttributes
 * SetPlatformApplicationAttributes
