@@ -16,6 +16,10 @@ module FakeSNS
       params.fetch("Action") { raise MissingAction }
     end
 
+    get "/" do
+      200
+    end
+
     post "/" do
       begin
         response = database.perform(action, params)

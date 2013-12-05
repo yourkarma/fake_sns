@@ -1,47 +1,44 @@
 ENV["RACK_ENV"] ||= 'test'
 
 require "bundler/setup"
-Bundler.require(:default, :test)
+Bundler.setup
 
-require "faraday"
+require "aws-sdk"
+require "fake_sns/test_integration"
+require "fake_sqs/test_integration"
 
-require "support/server_helper"
+
+AWS.config(
+  use_ssl:            false,
+  sqs_endpoint:       "localhost",
+  sqs_port:           4568,
+  sns_endpoint:       "localhost",
+  sns_port:           9293,
+  access_key_id:      "fake access key",
+  secret_access_key:  "fake secret key",
+)
+
+$fake_sns = FakeSNS::TestIntegration.new
+$fake_sqs = FakeSQS::TestIntegration.new
 
 module SpecHelper
-
   def sns
-    @sns ||= AWS::SNS.new
+    AWS::SNS.new
   end
-
 end
 
 RSpec.configure do |config|
+
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.expect_with :rspec do |rspec|
     rspec.syntax = :expect
   end
 
-  config.before(:suite) do
+  config.before(:each) { $fake_sns.start }
+  config.after(:suite) { $fake_sns.stop }
+  config.include SpecHelper
 
-    $server = ServerHelper.new
-    $server.start
+  config.before(:each, :sqs) { $fake_sqs.start }
+  config.after(:suite) { $fake_sqs.stop }
 
-    AWS.config(
-      use_ssl:            false,
-      sns_endpoint:       $server.host,
-      sns_port:           $server.port,
-      access_key_id:      "xxx",
-      secret_access_key:  "yyy",
-    )
-  end
-
-  config.after(:suite) do
-    $server.stop
-  end
-
-  config.before(:each) do
-    $server.reset
-  end
-
-  config.include(SpecHelper)
 end
