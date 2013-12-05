@@ -1,5 +1,14 @@
+require "etc"
+require "yaml/store"
+
 module FakeSNS
   class Database
+
+    attr_reader :database_filename
+
+    def initialize(database_filename)
+      @database_filename = database_filename || File.join(Dir.home, ".fake_sns.yml")
+    end
 
     def perform(action, params)
       action_instance = action_provider(action).new(self, params)
@@ -8,18 +17,29 @@ module FakeSNS
     end
 
     def topics
-      @topics ||= {}
+      @topics ||= TopicCollection.new(store["topics"])
     end
 
     def subscriptions
-      @subscriptions ||= []
+      store["subscriptions"] ||= []
     end
 
     def reset
-      @topics = {}
+      topics.reset
+      store["subscriptions"].clear
+    end
+
+    def transaction
+      store.transaction do
+        yield
+      end
     end
 
     private
+
+    def store
+      @store ||= YAML::Store.new(database_filename)
+    end
 
     def action_provider(action)
       Actions.const_get(action)

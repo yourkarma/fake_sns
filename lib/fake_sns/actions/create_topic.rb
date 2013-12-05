@@ -23,9 +23,9 @@ module FakeSNS
 
       def new_topic
         arn = generate_arn
-        topic = { "arn" => arn, "name" => name }
-        db.topics[arn] = topic
-        topic
+        topic_attributes = { "arn" => arn, "name" => name }
+        db.topics.create(topic_attributes)
+        topic_attributes
       end
 
       def generate_arn
@@ -33,10 +33,7 @@ module FakeSNS
       end
 
       def existing_topic
-        _, topic = db.topics.find do |arn, t|
-          t["name"] == name
-        end
-        topic
+        db.topics.find { |t| t["name"] == name }
       end
 
     end

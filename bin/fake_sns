@@ -6,9 +6,19 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'fake_sns/server'
 require 'optparse'
 
-options = { :port => 9292, :host => "0.0.0.0", :verbose => false, :daemonize => false }
+options = {
+  :port      => 9292,
+  :host      => "0.0.0.0",
+  :verbose   => false,
+  :daemonize => false,
+  :database  => nil,
+}
 
 parser = OptionParser.new do |o|
+
+  o.on "--database FILENAME", "Place to store the database (defaults to ~/.fake_sns.yml)" do |filename|
+    options[:database] = filename
+  end
 
   o.on "-p", "--port PORT", Integer, "Port to use (default: #{options[:port]})" do |port|
     options[:port] = port
@@ -71,4 +81,5 @@ end
 app.set :port, options[:port]
 app.set :bind, options[:host]
 app.set :server, options[:server] if options[:server]
+app.set :database, options[:database]
 app.run!
