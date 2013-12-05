@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "Subscribing" do
+describe "Subscribing", :sqs do
 
   it "lists subscriptions globally" do
     topic = sns.topics.create("my-topic")
@@ -23,6 +23,12 @@ describe "Subscribing" do
     expect {
       topic.subscribe("http://example.com")
     }.to raise_error AWS::SNS::Errors::InvalidParameterValue
+  end
+
+  it "can subscribe to a SQS queue" do
+    queue = AWS::SQS.new.queues.create("my-queue")
+    topic = sns.topics.create("my-topic")
+    topic.subscribe(queue)
   end
 
 end

@@ -19,12 +19,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "aws-sdk"
   spec.add_dependency "sinatra"
+  spec.add_dependency "tilt", "~> 1.4.1"
   spec.add_dependency "slim"
+  spec.add_dependency "virtus"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "webmock"
-  spec.add_development_dependency "faraday"
+  spec.add_development_dependency "fake_sqs", "~> 0.0.8"
 
 end
