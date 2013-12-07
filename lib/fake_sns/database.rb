@@ -21,12 +21,12 @@ module FakeSNS
     end
 
     def subscriptions
-      store["subscriptions"] ||= []
+      @subscriptions ||= SubscriptionCollection.new(store["subscriptions"])
     end
 
     def reset
       topics.reset
-      store["subscriptions"].clear
+      subscriptions.reset
     end
 
     def transaction

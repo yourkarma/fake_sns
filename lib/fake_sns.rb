@@ -9,6 +9,7 @@ require "fake_sns/error_response"
 require "fake_sns/database"
 require "fake_sns/topic_collection"
 require "fake_sns/topic"
+require "fake_sns/subscription_collection"
 require "fake_sns/subscription"
 
 require "fake_sns/response"

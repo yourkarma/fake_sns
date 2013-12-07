@@ -4,7 +4,7 @@ module FakeSNS
 
       def each_topic
         db.topics.each do |topic|
-          yield Struct.new(:arn).new(topic["arn"])
+          yield topic
         end
       end
 

@@ -7,6 +7,7 @@ module FakeSNS
     attribute :protocol, String
     attribute :endpoint, String
     attribute :topic_arn, String
+    attribute :owner, String
 
   end
 end

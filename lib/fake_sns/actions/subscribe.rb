@@ -12,12 +12,12 @@ module FakeSNS
         @topic = db.topics.fetch(topic_arn) do
           raise InvalidParameterValue, "Unknown topic: #{topic_arn}"
         end
-        db.subscriptions << {
+        db.subscriptions.create(
           "arn"       => subscription_arn,
           "protocol"  => protocol,
           "endpoint"  => endpoint,
           "topic_arn" => topic_arn,
-        }
+        )
       end
 
       def subscription_arn

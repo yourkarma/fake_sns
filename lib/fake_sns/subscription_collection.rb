@@ -1,5 +1,5 @@
 module FakeSNS
-  class TopicCollection
+  class SubscriptionCollection
 
     include Enumerable
 
@@ -15,15 +15,7 @@ module FakeSNS
     end
 
     def each(*args, &block)
-      collection.map { |item| Topic.new(item) }.each(*args, &block)
-    end
-
-    def fetch(arn, &default)
-      default ||= -> { raise InvalidParameterValue, "Unknown topic #{arn}" }
-      found = collection.find do |topic|
-        topic["arn"] == arn
-      end
-      found || default.call
+      collection.map { |item| Subscription.new(item) }.each(*args, &block)
     end
 
     def create(attributes)

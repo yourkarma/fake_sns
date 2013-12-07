@@ -9,7 +9,7 @@ module FakeSNS
 
       def each_subscription
         subscriptions.each do |subscription|
-          yield OpenStruct.new(subscription)
+          yield subscription
         end
       end
 
