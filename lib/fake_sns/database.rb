@@ -30,15 +30,27 @@ module FakeSNS
     end
 
     def transaction
-      store.transaction do
+      if memory_store?
         yield
+      else
+        store.transaction do
+          yield
+        end
       end
     end
 
     private
 
     def store
-      @store ||= YAML::Store.new(database_filename)
+      if memory_store?
+        @store ||= {}
+      else
+        @store ||= YAML::Store.new(database_filename)
+      end
+    end
+
+    def memory_store?
+      database_filename == ":memory:"
     end
 
     def action_provider(action)

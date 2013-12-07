@@ -23,7 +23,7 @@ module FakeSNS
     end
 
     def start!
-      @pid = Process.spawn(binfile, "-p", port.to_s, :out => out, :err => out)
+      @pid = Process.spawn(binfile, "-p", port.to_s, "--database", database, :out => out, :err => out)
       wait_until_up
     end
 
@@ -52,6 +52,10 @@ module FakeSNS
     end
 
     private
+
+    def database
+      options.fetch(:database) { ":memory" }
+    end
 
     def option(key)
       options.fetch(key) { AWS.config.public_send(key) }

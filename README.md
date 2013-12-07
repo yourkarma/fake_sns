@@ -79,6 +79,14 @@ AWS.config(
 )
 ```
 
+### Command line options
+
+Get help by running `fake_sns --help`. These options are basically the same as
+Sinatra's options. Here are the SNS specific options:
+
+* Store the database somewhere else: `--database FILENAME` or
+specify an in memory database that will be lost: `--database :memory:`
+
 ---
 
 ## More information

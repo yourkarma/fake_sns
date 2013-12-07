@@ -18,7 +18,12 @@ AWS.config(
   secret_access_key:  "fake secret key",
 )
 
-$fake_sns = FakeSNS::TestIntegration.new
+db = ENV["SNS_DATBASE"]
+db = ":memory:" if ENV["SNS_DATBASE"].to_s == ""
+
+puts "Running tests with database stored in #{db}"
+
+$fake_sns = FakeSNS::TestIntegration.new(database: db)
 $fake_sqs = FakeSQS::TestIntegration.new
 
 module SpecHelper
