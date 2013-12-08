@@ -51,6 +51,14 @@ module FakeSNS
       false
     end
 
+    def data
+      YAML.load(connection.get("/").body)
+    end
+
+    def connection
+      @connection ||= Net::HTTP.new(host, port)
+    end
+
     private
 
     def database
@@ -80,10 +88,6 @@ module FakeSNS
       else
         "/dev/null"
       end
-    end
-
-    def connection
-      @connection ||= Net::HTTP.new(host, port)
     end
 
     def debug?

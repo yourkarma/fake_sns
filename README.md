@@ -2,15 +2,13 @@
 
 A small web app for local SNS development.
 
-This app contains a web interface that lists all the messages sent to it. You
-can also edit the messages and send them to an SQS queue of your chosing.
-
-**NB** Very far from being useful.
+It contains a small store to inspect, and some methods to inspect and change the
+contents, so you can create scenarios.
 
 ### Noteworthy differences:
 
 * No checking of access keys.
-* Returns more than 100 topics, no support for `NextToken` parameter.
+* Returns all topics, not just 100, no support for `NextToken` parameter.
 
 ### Implemented:
 
@@ -19,9 +17,12 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * DeleteTopic
 * GetTopicAttributes
 * SetTopicAttributes
+* ListSubscriptions
+* ListSubscriptionsByTopic
 
 ### Under Construction
 
+* Subscribe
 * Publish
 
 ### Actions to be implemented:
@@ -37,13 +38,10 @@ can also edit the messages and send them to an SQS queue of your chosing.
 * GetSubscriptionAttributes
 * ListEndpointsByPlatformApplication
 * ListPlatformApplications
-* ListSubscriptions
-* ListSubscriptionsByTopic
 * RemovePermission
 * SetEndpointAttributes
 * SetPlatformApplicationAttributes
 * SetSubscriptionAttributes
-* Subscribe
 * Unsubscribe
 
 ## Usage
@@ -57,17 +55,6 @@ As a gem:
 $ gem install fake_sns
 $ fake_sns -p 9292
 ```
-
-As a plain Rack app:
-
-```
-$ git clone https://github.com/yourkarma/fake_sns
-$ cd fake_sns
-$ bundle install
-$ rackup
-```
-
-In both cases, FakeSNS is available at http://localhost:9292
 
 To configure AWS-SDK to send messages here:
 
@@ -87,6 +74,29 @@ Sinatra's options. Here are the SNS specific options:
 * Store the database somewhere else: `--database FILENAME` or
 specify an in memory database that will be lost: `--database :memory:`
 
+### Extra endpoints
+
+To get a YAML representation of all the data known to FakeSNS, do a GET request
+to the root path:
+
+```
+curl -X GET http://localhost:9292/
+```
+
+To change the database, submit the contents you got from the previous step,
+augment it and submit it as the body of a PATCH request:
+
+```
+curl -X GET http://localhost:9292/ -o my-data.yml
+vim my-data.yml
+curl -X PATCH --data @my-data.yml http://localhost:9292/
+```
+
+To reset the entire database, send a DELETE request:
+
+```
+curl -X DELETE http://localhost:9292/
+```
 ---
 
 ## More information

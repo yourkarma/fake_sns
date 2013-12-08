@@ -7,13 +7,13 @@ namespace :spec do
 
   desc "Run specs with in-memory database"
   RSpec::Core::RakeTask.new(:memory) do |t|
-    ENV["SNS_DATBASE"] = ":memory:"
+    ENV["SNS_DATABASE"] = ":memory:"
   end
 
   desc "Run specs with file database"
   RSpec::Core::RakeTask.new(:file) do |t|
     file = Tempfile.new(["rspec-sns", ".yml"], encoding: "utf-8")
-    ENV["SNS_DATBASE"] = file.path
+    ENV["SNS_DATABASE"] = file.path
   end
 
 end

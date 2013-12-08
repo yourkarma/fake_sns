@@ -4,9 +4,9 @@ module FakeSNS
 
       param message: "Message"
       param message_structure: "MessageStructure"
-      param subject: "Subject"
-      param target_arn: "TargetArn"
-      param topic_arn: "TopicArn"
+      param subject: "Subject" do nil end
+      param target_arn: "TargetArn" do nil end
+      param topic_arn: "TopicArn" do nil end
 
       def call
         if (bytes = message.bytesize) > 262144
@@ -16,6 +16,16 @@ module FakeSNS
           raise InvalidParameterValue, "Unknown topic: #{topic_arn}"
         end
         @message_id = SecureRandom.uuid
+
+        db.messages.create(
+          id:          message_id,
+          subject:     subject,
+          message:     message,
+          topic_arn:   topic_arn,
+          structure:   message_structure,
+          target_arn:  target_arn,
+          received_at: Time.now,
+        )
       end
 
       def message_id

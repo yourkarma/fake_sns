@@ -3,7 +3,9 @@ ENV["RACK_ENV"] ||= 'test'
 require "bundler/setup"
 Bundler.setup
 
+require "verbose_hash_fetch"
 require "aws-sdk"
+require "pry"
 require "fake_sns/test_integration"
 require "fake_sqs/test_integration"
 
@@ -18,8 +20,8 @@ AWS.config(
   secret_access_key:  "fake secret key",
 )
 
-db = ENV["SNS_DATBASE"]
-db = ":memory:" if ENV["SNS_DATBASE"].to_s == ""
+db = ENV["SNS_DATABASE"]
+db = ":memory:" if ENV["SNS_DATABASE"].to_s == ""
 
 puts "Running tests with database stored in #{db}"
 

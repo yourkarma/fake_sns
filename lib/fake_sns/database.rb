@@ -1,5 +1,4 @@
 require "etc"
-require "yaml/store"
 
 module FakeSNS
   class Database
@@ -17,40 +16,41 @@ module FakeSNS
     end
 
     def topics
-      @topics ||= TopicCollection.new(store["topics"])
+      @topics ||= TopicCollection.new(store)
     end
 
     def subscriptions
-      @subscriptions ||= SubscriptionCollection.new(store["subscriptions"])
+      @subscriptions ||= SubscriptionCollection.new(store)
+    end
+
+    def messages
+      @messages ||= MessageCollection.new(store)
     end
 
     def reset
       topics.reset
       subscriptions.reset
+      messages.reset
     end
 
     def transaction
-      if memory_store?
+      store.transaction do
         yield
-      else
-        store.transaction do
-          yield
-        end
       end
+    end
+
+    def replace(data)
+      store.replace(data)
+    end
+
+    def to_yaml
+      store.to_yaml
     end
 
     private
 
     def store
-      if memory_store?
-        @store ||= {}
-      else
-        @store ||= YAML::Store.new(database_filename)
-      end
-    end
-
-    def memory_store?
-      database_filename == ":memory:"
+      @store ||= Storage.for(database_filename)
     end
 
     def action_provider(action)

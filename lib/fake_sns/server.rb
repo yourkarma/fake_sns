@@ -13,7 +13,9 @@ module FakeSNS
     end
 
     get "/" do
-      200
+      database.transaction do
+        database.to_yaml
+      end
     end
 
     post "/" do
@@ -24,6 +26,7 @@ module FakeSNS
           erb :"#{response.template}.xml", scope: response
         rescue Exception => error
           p error
+          puts *error.backtrace
           error_response = ErrorResponse.new(error, params)
           status error_response.status
           erb :"error.xml", scope: error_response
@@ -36,6 +39,11 @@ module FakeSNS
         database.reset
         200
       end
+    end
+
+    patch "/" do
+      database.replace(request.body.read)
+      200
     end
 
   end

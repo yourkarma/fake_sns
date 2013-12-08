@@ -4,8 +4,12 @@ describe "Publishing" do
 
   let(:existing_topic) { sns.topics.create("my-topic") }
 
-  it "publishes something" do
-    existing_topic.publish("hallo")
+  it "remembers published messages" do
+    message_id = existing_topic.publish("hallo")
+    messages = $fake_sns.data.fetch("messages")
+    expect(messages.size).to eq 1
+    message = messages.first
+    expect(message.fetch(:id)).to eq message_id
   end
 
   it "needs an existing topic" do

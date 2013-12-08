@@ -1,30 +1,29 @@
 module FakeSNS
-  class TopicCollection
+  class MessageCollection
 
     include Enumerable
 
     def initialize(store)
       @store = store
-      @store["topics"] ||= []
+      @store["messages"] ||= []
     end
 
     def collection
-      @store["topics"]
+      @store["messages"]
     end
 
     def reset
-      @store["topics"] = []
+      @store["messages"] = []
     end
 
     def each(*args, &block)
-      p @store.to_yaml
-      collection.map { |item| Topic.new(item) }.each(*args, &block)
+      collection.each(*args, &block)
     end
 
     def fetch(arn, &default)
-      default ||= -> { raise InvalidParameterValue, "Unknown topic #{arn}" }
-      found = collection.find do |topic|
-        topic["arn"] == arn
+      default ||= -> { raise InvalidParameterValue, "Unknown message #{arn}" }
+      found = collection.find do |message|
+        message["arn"] == arn
       end
       found || default.call
     end

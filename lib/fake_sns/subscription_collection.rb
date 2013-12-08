@@ -5,13 +5,17 @@ module FakeSNS
 
     attr_reader :collection
 
-    def initialize(collection)
-      @collection = collection
-      @collection ||= []
+    def initialize(store)
+      @store = store
+      @store["subscriptions"] ||= []
+    end
+
+    def collection
+      @store["subscriptions"]
     end
 
     def reset
-      @collection = []
+      @store["subscriptions"] = []
     end
 
     def each(*args, &block)
