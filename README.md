@@ -97,9 +97,46 @@ To reset the entire database, send a DELETE request:
 ```
 curl -X DELETE http://localhost:9292/
 ```
+
+### Test Integration
+
+When making integration tests for your app, you can easily include Fake SNS.
+
+Here are the methods you need to run FakeSNS programmatically.
+
+``` ruby
+require "fake_sns/test_integration"
+
+# globally, before the test suite starts:
+AWS.config(
+  use_ssl:            false,
+  sns_endpoint:       "localhost",
+  sns_port:           4568,
+  access_key_id:      "fake access key",
+  secret_access_key:  "fake secret key",
+)
+fake_sns = FakeSNS::TestIntegration.new
+
+# before each test that requires SNS:
+fake_sns.start
+
+# at the end of the suite:
+at_exit {
+  fake_sns.stop
+}
+
+# for debugging, get everything FakeSNS knows:
+
+puts fake_sns.data.inspect
+```
+
+See `spec/spec_helper.rb` in this project for an example on how to load it in
+your test suite.
+
 ---
 
 ## More information
 
 * [API Reference](http://docs.aws.amazon.com/sns/latest/api/API_Operations.html)
 * [AWS-SDK docs](http://rubydoc.info/gems/aws-sdk/frames)
+* [Fake SQS](https://github.com/iain/fake_sqs)
