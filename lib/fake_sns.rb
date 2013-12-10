@@ -13,6 +13,7 @@ require "fake_sns/topic"
 require "fake_sns/subscription_collection"
 require "fake_sns/subscription"
 require "fake_sns/message_collection"
+require "fake_sns/message"
 
 require "fake_sns/response"
 

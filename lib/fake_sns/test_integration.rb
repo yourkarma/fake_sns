@@ -1,4 +1,4 @@
-require "net/http"
+require "faraday"
 
 module FakeSNS
   class TestIntegration
@@ -46,8 +46,8 @@ module FakeSNS
     end
 
     def up?
-      @pid && connection.get("/").code.to_s == "200"
-    rescue Errno::ECONNREFUSED
+      @pid && connection.get("/").success?
+    rescue Errno::ECONNREFUSED, Faraday::Error::ConnectionFailed
       false
     end
 
@@ -55,8 +55,13 @@ module FakeSNS
       YAML.load(connection.get("/").body)
     end
 
+    def drain(options = {})
+      default = { aws_config: AWS.config.send(:supplied) }
+      connection.post("/drain", default.merge(options).to_json)
+    end
+
     def connection
-      @connection ||= Net::HTTP.new(host, port)
+      @connection ||= Faraday.new(url)
     end
 
     private

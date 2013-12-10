@@ -20,6 +20,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sinatra"
   spec.add_dependency "virtus"
   spec.add_dependency "verbose_hash_fetch"
+  spec.add_dependency "faraday"
+  spec.add_dependency "aws-sdk"
 
   spec.add_development_dependency "aws-sdk"
   spec.add_development_dependency "bundler"

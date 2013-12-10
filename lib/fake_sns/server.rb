@@ -41,8 +41,13 @@ module FakeSNS
       end
     end
 
-    patch "/" do
+    put "/" do
       database.replace(request.body.read)
+      200
+    end
+
+    post "/drain" do
+      database.drain(JSON.parse(request.body.read || "{}"))
       200
     end
 

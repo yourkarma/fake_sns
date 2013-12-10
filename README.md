@@ -84,18 +84,35 @@ curl -X GET http://localhost:9292/
 ```
 
 To change the database, submit the contents you got from the previous step,
-augment it and submit it as the body of a PATCH request:
+augment it and submit it as the body of a PUT request:
 
 ```
 curl -X GET http://localhost:9292/ -o my-data.yml
 vim my-data.yml
-curl -X PATCH --data @my-data.yml http://localhost:9292/
+curl -X PUT --data @my-data.yml http://localhost:9292/
 ```
 
 To reset the entire database, send a DELETE request:
 
 ```
 curl -X DELETE http://localhost:9292/
+```
+
+To send the messages stored in the queue, you can send a post request:
+
+```
+curl -X POST http://localhost:9292/drain
+```
+
+Currently, only HTTP/HTTPS and SQS endpoints are working. You'll need
+to pass AWS config (in JSON format) for the SQS integration to work. See
+[FakeSNS] [fake_sns] for more information.
+
+```
+curl \
+       -X POST \
+       --data '{"aws_config": {"use_ssl": false, "sqs_endpoint": "localhost", "sqs_port": 4789, "secret_access_key": "xxx", "access_key_id": "yyy"}}' \
+       http://localhost:9292/drain
 ```
 
 ### Test Integration
@@ -128,15 +145,18 @@ at_exit {
 # for debugging, get everything FakeSNS knows:
 
 puts fake_sns.data.inspect
+
+# if you have SQS configured in the AWS config, you can also do:
+fake_sns.drain
 ```
 
 See `spec/spec_helper.rb` in this project for an example on how to load it in
 your test suite.
 
----
-
 ## More information
 
 * [API Reference](http://docs.aws.amazon.com/sns/latest/api/API_Operations.html)
 * [AWS-SDK docs](http://rubydoc.info/gems/aws-sdk/frames)
-* [Fake SQS](https://github.com/iain/fake_sqs)
+* [Fake SQS] [fake_sqs]
+
+[fake_sqs]: https://github.com/iain/fake_sqs

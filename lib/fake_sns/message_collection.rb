@@ -17,7 +17,7 @@ module FakeSNS
     end
 
     def each(*args, &block)
-      collection.each(*args, &block)
+      collection.map { |item| Message.new(item) }.each(*args, &block)
     end
 
     def fetch(arn, &default)

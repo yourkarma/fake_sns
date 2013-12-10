@@ -1,4 +1,5 @@
 require "etc"
+require "aws-sdk"
 
 module FakeSNS
   class Database
@@ -45,6 +46,18 @@ module FakeSNS
 
     def to_yaml
       store.to_yaml
+    end
+
+    def drain(options)
+      topics.each do |topic|
+        subscriptions.each do |subscription|
+          messages.each do |message|
+            if message.topic_arn == topic.arn
+              subscription.deliver(message, options)
+            end
+          end
+        end
+      end
     end
 
     private
