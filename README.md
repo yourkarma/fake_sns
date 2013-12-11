@@ -143,7 +143,6 @@ at_exit {
 }
 
 # for debugging, get everything FakeSNS knows:
-
 puts fake_sns.data.inspect
 
 # if you have SQS configured in the AWS config, you can also do:

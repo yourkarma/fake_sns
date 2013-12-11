@@ -67,7 +67,7 @@ module FakeSNS
     private
 
     def database
-      options.fetch(:database) { ":memory" }
+      options.fetch(:database) { ":memory:" }
     end
 
     def option(key)
