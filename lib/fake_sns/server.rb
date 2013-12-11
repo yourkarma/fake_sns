@@ -26,7 +26,7 @@ module FakeSNS
           erb :"#{response.template}.xml", scope: response
         rescue Exception => error
           p error
-          puts *error.backtrace
+          puts(*error.backtrace)
           error_response = ErrorResponse.new(error, params)
           status error_response.status
           erb :"error.xml", scope: error_response
@@ -47,7 +47,9 @@ module FakeSNS
     end
 
     post "/drain" do
-      database.drain(JSON.parse(request.body.read || "{}"))
+      database.each_deliverable_message do |subscription, message|
+        DeliverMessage.call(subscription: subscription, message: message, request: request)
+      end
       200
     end
 

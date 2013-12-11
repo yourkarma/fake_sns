@@ -48,12 +48,12 @@ module FakeSNS
       store.to_yaml
     end
 
-    def drain(options)
+    def each_deliverable_message
       topics.each do |topic|
         subscriptions.each do |subscription|
           messages.each do |message|
             if message.topic_arn == topic.arn
-              subscription.deliver(message, options)
+              yield subscription, message
             end
           end
         end
