@@ -3,6 +3,7 @@ Encoding.default_internal = Encoding::UTF_8
 
 require "virtus"
 require "verbose_hash_fetch"
+
 require "fake_sns/error"
 require "fake_sns/error_response"
 
@@ -20,6 +21,7 @@ require "fake_sns/deliver_message"
 
 require "fake_sns/response"
 require "fake_sns/action"
+require "fake_sns/server"
 
 # load all the actions
 action_files = File.expand_path("../fake_sns/actions/*.rb", __FILE__)
@@ -28,5 +30,13 @@ Dir.glob(action_files).each do |file|
 end
 
 module FakeSNS
+
+  def self.server(options)
+    app = Server
+    options.each do |key, value|
+      app.set key, value
+    end
+    app
+  end
 
 end

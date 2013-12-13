@@ -31,4 +31,12 @@ describe "Subscribing", :sqs do
     topic.subscribe(queue)
   end
 
+  it "won't subscribe twice to the same endpoint" do
+    queue = AWS::SQS.new.queues.create("my-queue")
+    topic = sns.topics.create("my-topic")
+    topic.subscribe(queue)
+    topic.subscribe(queue)
+    expect(sns.subscriptions.to_a.size).to eq 1
+  end
+
 end

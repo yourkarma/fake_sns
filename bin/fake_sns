@@ -3,7 +3,7 @@
 lib = File.expand_path("../../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'fake_sns/server'
+require 'fake_sns'
 require 'optparse'
 
 options = {
@@ -58,8 +58,6 @@ end
 
 parser.parse!
 
-app = FakeSNS::Server
-
 if options[:daemonize]
   Process.daemon(true, true)
 end
@@ -78,8 +76,4 @@ if (pid = options[:pid])
   File.open(pid, 'w') { |f| f.write(Process.pid) }
 end
 
-app.set :port, options[:port]
-app.set :bind, options[:host]
-app.set :server, options[:server] if options[:server]
-app.set :database, options[:database]
-app.run!
+FakeSNS.server(options).run!
