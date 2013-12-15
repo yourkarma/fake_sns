@@ -16,29 +16,26 @@ module FakeSNS
       end
 
       def subscription_arn
-        if @subscription
-          @subscription.arn
-        else
-          raise InvalidParameterValue, "HELP"
-        end
+        @subscription["arn"]
       end
 
       private
 
       def existing_subscription
-        db.subscriptions.find { |s|
+        db.subscriptions.to_a.find { |s|
           s.topic_arn == topic_arn && s.endpoint == endpoint
         }
       end
 
       def new_subscription
-        db.subscriptions.create(
+        attributes = {
           "arn"       => "#{topic_arn}:#{SecureRandom.uuid}",
           "protocol"  => protocol,
           "endpoint"  => endpoint,
           "topic_arn" => topic_arn,
-        )
-        existing_subscription
+        }
+        db.subscriptions.create(attributes)
+        attributes
       end
 
     end

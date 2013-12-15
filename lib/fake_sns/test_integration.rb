@@ -57,7 +57,13 @@ module FakeSNS
 
     def drain(options = {})
       default = { aws_config: AWS.config.send(:supplied) }
-      connection.post("/drain", default.merge(options).to_json)
+      body = default.merge(options).to_json
+      result = connection.post("/drain", body)
+      if result.success?
+        true
+      else
+        raise "Unable to drain messages: #{result.body}"
+      end
     end
 
     def connection

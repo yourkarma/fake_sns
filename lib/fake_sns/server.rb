@@ -4,6 +4,10 @@ require "sinatra/base"
 module FakeSNS
   class Server < Sinatra::Base
 
+    before do
+      content_type :xml
+    end
+
     def database
       $database ||= FakeSNS::Database.new(settings.database)
     end
@@ -47,8 +51,11 @@ module FakeSNS
     end
 
     post "/drain" do
-      database.each_deliverable_message do |subscription, message|
-        DeliverMessage.call(subscription: subscription, message: message, request: request)
+      database.transaction do
+        config = JSON.parse(request.body.read)
+        database.each_deliverable_message do |subscription, message|
+          DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
+        end
       end
       200
     end

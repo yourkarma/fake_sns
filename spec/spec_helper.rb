@@ -32,6 +32,9 @@ module SpecHelper
   def sns
     AWS::SNS.new
   end
+  def sqs
+    AWS::SQS.new
+  end
 end
 
 RSpec.configure do |config|

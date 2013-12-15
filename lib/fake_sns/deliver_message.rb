@@ -1,4 +1,5 @@
 require "forwardable"
+require "faraday"
 
 module FakeSNS
   class DeliverMessage
@@ -9,7 +10,7 @@ module FakeSNS
       new(options).call
     end
 
-    attr_reader :subscription, :message, :request
+    attr_reader :subscription, :message, :config, :request
 
     def_delegators :subscription, :protocol, :endpoint, :arn
 
@@ -17,6 +18,7 @@ module FakeSNS
       @subscription = options.fetch(:subscription)
       @message = options.fetch(:message)
       @request = options.fetch(:request)
+      @config = options.fetch(:config)
     end
 
     def call
@@ -65,10 +67,6 @@ module FakeSNS
 
     def message_contents
       message.message_for_protocol protocol
-    end
-
-    def config
-      @config ||= JSON.parse(request.body.read || "{}")
     end
 
     def pending
