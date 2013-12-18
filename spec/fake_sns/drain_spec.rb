@@ -15,6 +15,18 @@ describe "Drain messages", :sqs do
     expect(queue.visible_messages).to eq 1
   end
 
+  it "works for SQS with a single message" do
+    topic = sns.topics.create("my-topic")
+    queue = sqs.queues.create("my-queue")
+    topic.subscribe(queue)
+
+    message_id = topic.publish("X")
+    topic.publish("Y")
+
+    $fake_sns.drain(message_id)
+    expect(queue.visible_messages).to eq 1
+  end
+
   it "works for HTTP" do
     requests = []
     _headers = []

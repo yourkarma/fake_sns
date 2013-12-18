@@ -98,10 +98,16 @@ To reset the entire database, send a DELETE request:
 curl -X DELETE http://localhost:9292/
 ```
 
-To send the messages stored in the queue, you can send a post request:
+To send ALL the messages stored in the queue, you can send a post request:
 
 ```
 curl -X POST http://localhost:9292/drain
+```
+
+You can also just send a single message:
+
+```
+curl -X POST http://localhost:9292/drain/:message_id
 ```
 
 Currently, only HTTP/HTTPS and SQS endpoints are working. You'll need

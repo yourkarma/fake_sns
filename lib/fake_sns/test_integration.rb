@@ -55,10 +55,11 @@ module FakeSNS
       YAML.load(connection.get("/").body)
     end
 
-    def drain(options = {})
+    def drain(message_id = nil, options = {})
+      path = message_id ? "/drain/#{message_id}" : "/drain"
       default = { aws_config: AWS.config.send(:supplied) }
       body = default.merge(options).to_json
-      result = connection.post("/drain", body)
+      result = connection.post(path, body)
       if result.success?
         true
       else

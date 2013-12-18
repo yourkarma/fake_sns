@@ -60,5 +60,17 @@ module FakeSNS
       200
     end
 
+    post "/drain/:message_id" do |message_id|
+      config = JSON.parse(request.body.read)
+      database.transaction do
+        database.each_deliverable_message do |subscription, message|
+          if message.id == message_id
+            DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
+          end
+        end
+      end
+      200
+    end
+
   end
 end

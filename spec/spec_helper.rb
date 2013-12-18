@@ -26,7 +26,7 @@ db = ":memory:" if ENV["SNS_DATABASE"].to_s == ""
 puts "Running tests with database stored in #{db}"
 
 $fake_sns = FakeSNS::TestIntegration.new(database: db)
-$fake_sqs = FakeSQS::TestIntegration.new
+$fake_sqs = FakeSQS::TestIntegration.new(database: ":memory:")
 
 module SpecHelper
   def sns
