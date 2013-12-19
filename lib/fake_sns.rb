@@ -33,6 +33,15 @@ module FakeSNS
 
   def self.server(options)
     app = Server
+    if log = options[:log]
+      $stdout.reopen(log, "w:utf-8")
+      $stderr.reopen(log, "w:utf-8")
+      app.enable :logging
+    end
+    if options[:verbose]
+      require "fake_sns/show_output"
+      app.use FakeSNS::ShowOutput
+    end
     options.each do |key, value|
       app.set key, value
     end
