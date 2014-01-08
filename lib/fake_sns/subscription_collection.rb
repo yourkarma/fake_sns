@@ -30,5 +30,13 @@ module FakeSNS
       collection.delete(fetch(arn))
     end
 
+    def fetch(arn, &default)
+      default ||= -> { raise InvalidParameterValue, "Unknown subscription #{arn}" }
+      found = collection.find do |subscription|
+        subscription["arn"] == arn
+      end
+      found || default.call
+    end
+
   end
 end

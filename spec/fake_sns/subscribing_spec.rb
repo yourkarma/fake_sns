@@ -7,6 +7,8 @@ describe "Subscribing", :sqs do
     subscription = topic.subscribe("http://example.com")
     expect(sns.subscriptions.map(&:topic_arn)).to eq [topic.arn]
     expect(sns.subscriptions.map(&:arn)).to eq [subscription.arn]
+
+    subscription.raw_message_delivery = true
   end
 
   it "filters by topic" do
