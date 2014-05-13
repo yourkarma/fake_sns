@@ -1,3 +1,5 @@
+require_relative 'list_subscriptions'
+
 module FakeSNS
   module Actions
     class ListSubscriptionsByTopic < ListSubscriptions
