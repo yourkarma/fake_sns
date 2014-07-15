@@ -3,7 +3,7 @@ module FakeSNS
     class Publish < Action
 
       param message: "Message"
-      param message_structure: "MessageStructure"
+      param message_structure: "MessageStructure" do nil end
       param subject: "Subject" do nil end
       param target_arn: "TargetArn" do nil end
       param topic_arn: "TopicArn" do nil end
