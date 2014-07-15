@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday", "~> 0.8"
   spec.add_dependency "aws-sdk", "~> 1.30"
 
-  spec.add_development_dependency "aws-sdk"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
