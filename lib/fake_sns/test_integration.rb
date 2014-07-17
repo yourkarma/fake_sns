@@ -1,4 +1,5 @@
 require "faraday"
+require "timeout"
 
 module FakeSNS
   class TestIntegration
@@ -7,6 +8,10 @@ module FakeSNS
 
     def initialize(options = {})
       @options = options
+    end
+
+    def startup_timeout
+      options.fetch(:startup_timeout) { 5 }
     end
 
     def host
@@ -82,12 +87,12 @@ module FakeSNS
     end
 
 
-    def wait_until_up(deadline = Time.now + 2)
-      fail "FakeSNS didn't start in time" if Time.now > deadline
-      unless up?
-        sleep 0.1
-        wait_until_up(deadline)
+    def wait_until_up
+      Timeout.timeout startup_timeout do
+        sleep 0.1 until up?
       end
+    rescue Timeout::Error
+      fail "FakeSNS didn't start in time (timeout is #{startup_timeout} seconds)"
     end
 
     def binfile
