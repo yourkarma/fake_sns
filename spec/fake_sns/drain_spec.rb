@@ -1,8 +1,7 @@
-require "spec_helper"
 require "sinatra/base"
 require 'json_expressions/rspec'
 
-describe "Drain messages", :sqs do
+RSpec.describe "Drain messages", :sqs do
 
   it "works for SQS" do
     topic = sns.topics.create("my-topic")

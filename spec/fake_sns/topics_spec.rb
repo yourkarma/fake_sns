@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe "Topics" do
+RSpec.describe "Topics" do
 
   it "rejects invalid characters in topic names" do
     expect {

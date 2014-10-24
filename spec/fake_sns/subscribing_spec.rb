@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe "Subscribing", :sqs do
+RSpec.describe "Subscribing", :sqs do
 
   it "lists subscriptions globally" do
     topic = sns.topics.create("my-topic")

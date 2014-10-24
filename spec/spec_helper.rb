@@ -39,10 +39,7 @@ end
 
 RSpec.configure do |config|
 
-  config.treat_symbols_as_metadata_keys_with_true_values = true
-  config.expect_with :rspec do |rspec|
-    rspec.syntax = :expect
-  end
+  config.disable_monkey_patching!
 
   config.before(:each) { $fake_sns.start }
   config.after(:suite) { $fake_sns.stop }

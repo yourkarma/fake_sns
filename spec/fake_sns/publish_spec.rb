@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe "Publishing" do
+RSpec.describe "Publishing" do
 
   let(:existing_topic) { sns.topics.create("my-topic") }
 

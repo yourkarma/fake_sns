@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe "Replacing the data" do
+RSpec.describe "Replacing the data" do
 
   it "works by submitting new YAML" do
     topic = sns.topics.create("my-topic")
