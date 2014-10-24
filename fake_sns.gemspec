@@ -1,4 +1,4 @@
-# coding: utf-8
+#coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'fake_sns/version'
@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "virtus", "~> 1.0"
   spec.add_dependency "verbose_hash_fetch"
   spec.add_dependency "faraday", "~> 0.8"
-  spec.add_dependency "aws-sdk", "~> 1.30"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
@@ -30,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "fake_sqs", "~> 0.0.9"
   spec.add_development_dependency "json_expressions"
 
+  spec.add_runtime_dependency 'aws-sdk', '>= 0', '~> 1.30'
 end
