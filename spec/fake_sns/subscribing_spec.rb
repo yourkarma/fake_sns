@@ -1,42 +1,49 @@
 RSpec.describe "Subscribing", :sqs do
 
   it "lists subscriptions globally" do
-    topic = sns.topics.create("my-topic")
-    subscription = topic.subscribe("http://example.com")
-    expect(sns.subscriptions.map(&:topic_arn)).to eq [topic.arn]
-    expect(sns.subscriptions.map(&:arn)).to eq [subscription.arn]
+    topic_arn = sns.create_topic(name: "my-topic").topic_arn
+    subscription_arn = sns.subscribe(topic_arn: topic_arn, protocol: "http", endpoint: "http://example.com").subscription_arn
 
-    subscription.raw_message_delivery = true
+    subscriptions = sns.list_subscriptions.subscriptions
+    expect(subscriptions.map(&:topic_arn)).to eq [topic_arn]
+    expect(subscriptions.map(&:subscription_arn)).to eq [subscription_arn]
   end
 
   it "filters by topic" do
-    topic = sns.topics.create("my-topic")
-    other_topic = sns.topics.create("my-topic-2")
-    subscription = topic.subscribe("http://example.com")
-    expect(topic.subscriptions.map(&:topic_arn)).to eq [topic.arn]
-    expect(topic.subscriptions.map(&:arn)).to eq [subscription.arn]
-    expect(other_topic.subscriptions.map(&:arn)).to eq []
+    topic_arn = sns.create_topic(name: "my-topic").topic_arn
+    _other_topic_arn = sns.create_topic(name: "my-topic-2").topic_arn
+
+    subscription_arn = sns.subscribe(topic_arn: topic_arn, protocol: "http", endpoint: "http://example.com").subscription_arn
+    subscriptions = sns.list_subscriptions.subscriptions
+    expect(subscriptions.map(&:topic_arn)).to eq [topic_arn]
+    expect(subscriptions.map(&:subscription_arn)).to eq [subscription_arn]
   end
 
   it "needs an existing topic" do
-    topic = sns.topics["arn:aws:sns:us-east-1:5068edfd0f7ee3ea9ccc1e73cbb17569:not-exist"]
+    topic_arn = "arn:aws:sns:us-east-1:5068edfd0f7ee3ea9ccc1e73cbb17569:not-exist"
     expect {
-      topic.subscribe("http://example.com")
-    }.to raise_error AWS::SNS::Errors::InvalidParameterValue
+      sns.subscribe(topic_arn: topic_arn, protocol: "http", endpoint: "http://example.com")
+    }.to raise_error Aws::SNS::Errors::InvalidParameterValue
   end
 
   it "can subscribe to a SQS queue" do
-    queue = AWS::SQS.new.queues.create("my-queue")
-    topic = sns.topics.create("my-topic")
-    topic.subscribe(queue)
+    queue_url = sqs.create_queue(queue_name: "my-queue").queue_url
+    queue_arn = sqs.get_queue_attributes(queue_url: queue_url, attribute_names: ["QueueArn"]).attributes.fetch("QueueArn")
+    topic_arn = sns.create_topic(name: "my-topic").topic_arn
+    sns.subscribe(topic_arn: topic_arn, protocol: "sqs", endpoint: queue_arn)
   end
 
   it "won't subscribe twice to the same endpoint" do
-    queue = AWS::SQS.new.queues.create("my-queue")
-    topic = sns.topics.create("my-topic")
-    topic.subscribe(queue)
-    topic.subscribe(queue)
-    expect(sns.subscriptions.to_a.size).to eq 1
+    queue_url = sqs.create_queue(queue_name: "my-queue").queue_url
+    queue_arn = sqs.get_queue_attributes(queue_url: queue_url, attribute_names: ["QueueArn"]).attributes.fetch("QueueArn")
+    topic_arn = sns.create_topic(name: "my-topic").topic_arn
+
+    2.times do
+      sns.subscribe(topic_arn: topic_arn, protocol: "sqs", endpoint: queue_arn)
+    end
+
+    subscriptions = sns.list_subscriptions.subscriptions
+    expect(subscriptions.size).to eq 1
   end
 
 end

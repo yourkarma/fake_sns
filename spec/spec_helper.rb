@@ -10,30 +10,47 @@ require "fake_sns/test_integration"
 require "fake_sqs/test_integration"
 
 
-AWS.config(
-  use_ssl:            false,
-  sqs_endpoint:       "localhost",
-  sqs_port:           4568,
-  sns_endpoint:       "localhost",
-  sns_port:           9293,
-  access_key_id:      "fake access key",
-  secret_access_key:  "fake secret key",
+Aws.config.update(
+  region: "us-east-1",
+  credentials: Aws::Credentials.new("fake", "fake"),
 )
+# Aws.config(
+#   use_ssl:            false,
+#   sqs_endpoint:       "localhost",
+#   sqs_port:           4568,
+#   sns_endpoint:       "localhost",
+#   sns_port:           9293,
+#   access_key_id:      "fake access key",
+#   secret_access_key:  "fake secret key",
+# )
 
 db = ENV["SNS_DATABASE"]
 db = ":memory:" if ENV["SNS_DATABASE"].to_s == ""
 
 puts "Running tests with database stored in #{db}"
 
-$fake_sns = FakeSNS::TestIntegration.new(database: db)
-$fake_sqs = FakeSQS::TestIntegration.new(database: ":memory:")
+$fake_sns = FakeSNS::TestIntegration.new(
+  database:      db,
+  sns_endpoint:  "localhost",
+  sns_port:      9293,
+)
+
+$fake_sqs = FakeSQS::TestIntegration.new(
+  database:      ":memory:",
+  sqs_endpoint:  "localhost",
+  sqs_port:      4568,
+)
 
 module SpecHelper
   def sns
-    AWS::SNS.new
+    Aws::SNS::Client.new.tap { |client|
+      client.config.endpoint = URI("http://localhost:9293")
+    }
   end
   def sqs
-    AWS::SQS.new
+    Aws::SQS::Client.new.tap { |client|
+      client.config.endpoint = URI("http://localhost:4568")
+    }
   end
 end
 

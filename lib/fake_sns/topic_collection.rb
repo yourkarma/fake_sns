@@ -17,7 +17,6 @@ module FakeSNS
     end
 
     def each(*args, &block)
-      p @store.to_yaml
       collection.map { |item| Topic.new(item) }.each(*args, &block)
     end
 

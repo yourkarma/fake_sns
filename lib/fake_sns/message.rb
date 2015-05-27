@@ -8,6 +8,8 @@ module FakeSNS
     json = Class.new(Virtus::Attribute) do
       def coerce(value)
         value.is_a?(::Hash) ? value : JSON.parse(value)
+      rescue
+        value
       end
     end
 

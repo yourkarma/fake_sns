@@ -34,9 +34,14 @@ module FakeSNS
 
     def sqs
       queue_name = endpoint.split(":").last
-      sqs = AWS::SQS.new(config["aws_config"] || {})
-      queue = sqs.queues.named(queue_name)
-      queue.send_message(message_contents)
+      sqs = Aws::SQS::Client.new(
+        region: config.fetch("region"),
+        credentials: Aws::Credentials.new(config.fetch("access_key_id"), config.fetch("secret_access_key")),
+      ).tap { |client|
+        client.config.endpoint = URI(config.fetch("sqs_endpoint"))
+      }
+      queue_url = sqs.get_queue_url(queue_name: queue_name).queue_url
+      sqs.send_message(queue_url: queue_url, message_body: message_contents)
     end
 
     def http

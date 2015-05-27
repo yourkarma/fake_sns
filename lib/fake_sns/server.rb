@@ -51,17 +51,23 @@ module FakeSNS
     end
 
     post "/drain" do
-      database.transaction do
-        config = JSON.parse(request.body.read)
-        database.each_deliverable_message do |subscription, message|
-          DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
+      config = JSON.parse(request.body.read.to_s)
+      begin
+        database.transaction do
+          database.each_deliverable_message do |subscription, message|
+            DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
+          end
         end
+      rescue => e
+        status 500
+        "#{e.class}: #{e}\n\n#{e.backtrace.join("\n")}"
+      else
+        200
       end
-      200
     end
 
     post "/drain/:message_id" do |message_id|
-      config = JSON.parse(request.body.read)
+      config = JSON.parse(request.body.read.to_s)
       database.transaction do
         database.each_deliverable_message do |subscription, message|
           if message.id == message_id

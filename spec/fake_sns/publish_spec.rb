@@ -1,9 +1,9 @@
 RSpec.describe "Publishing" do
 
-  let(:existing_topic) { sns.topics.create("my-topic") }
+  let(:existing_topic) { sns.create_topic(name: "my-topic").topic_arn }
 
   it "remembers published messages" do
-    message_id = existing_topic.publish("hallo")
+    message_id = sns.publish(topic_arn: existing_topic, message: "hallo").message_id
     messages = $fake_sns.data.fetch("messages")
     expect(messages.size).to eq 1
     message = messages.first
@@ -11,16 +11,16 @@ RSpec.describe "Publishing" do
   end
 
   it "needs an existing topic" do
-    topic = sns.topics["arn:aws:sns:us-east-1:5068edfd0f7ee3ea9ccc1e73cbb17569:not-exist"]
+    non_existing = "arn:aws:sns:us-east-1:5068edfd0f7ee3ea9ccc1e73cbb17569:not-exist"
     expect {
-      topic.publish("hallo")
-    }.to raise_error AWS::SNS::Errors::InvalidParameterValue
+      sns.publish(topic_arn: non_existing, message: "hallo")
+    }.to raise_error Aws::SNS::Errors::InvalidParameterValue
   end
 
   it "doesn't allow messages that are too big" do
     expect {
-      existing_topic.publish("A" * 262145)
-    }.to raise_error AWS::SNS::Errors::InvalidParameterValue
+      sns.publish(topic_arn: existing_topic, message: "A" * 262145)
+    }.to raise_error Aws::SNS::Errors::InvalidParameterValue
   end
 
 end
