@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Small Fake version of SNS}
   spec.summary       = %q{Small Fake version of SNS}
   spec.homepage      = "https://github.com/yourkarma/fake_sns"
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
