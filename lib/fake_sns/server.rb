@@ -16,6 +16,22 @@ module FakeSNS
       params.fetch("Action") { raise MissingAction }
     end
 
+    def self.run!
+      if settings.ssl
+        super do |server|
+          root_dir = File.join(__dir__, '..', '..')
+          server.ssl = true
+          server.ssl_options = {
+            :cert_chain_file  => File.join(root_dir, 'fake_sns.crt'),
+            :private_key_file => File.join(root_dir, 'fake_sns.key'),
+            :verify_peer      => false
+          }
+        end
+      else
+        super
+      end
+    end
+
     get "/" do
       database.transaction do
         database.to_yaml

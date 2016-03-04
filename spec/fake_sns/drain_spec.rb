@@ -75,7 +75,6 @@ RSpec.describe "Drain messages", :sqs do
       "Subject"          => nil,
       "Timestamp"        => anything,
       "TopicArn"         => topic_arn,
-      "Type"             => "Notification",
       "UnsubscribeURL"   => "",
     )
 
