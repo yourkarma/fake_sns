@@ -9,6 +9,7 @@ require 'optparse'
 options = {
   :port      => 9292,
   :host      => "0.0.0.0",
+  :ssl       => false,
   :verbose   => false,
   :daemonize => false,
   :database  => nil,
@@ -22,6 +23,10 @@ parser = OptionParser.new do |o|
 
   o.on "-p", "--port PORT", Integer, "Port to use (default: #{options[:port]})" do |port|
     options[:port] = port
+  end
+
+  o.on "-s", "--[no-]ssl", "Enable or disable SSL: disabled by default" do |ssl|
+    options[:ssl] = ssl
   end
 
   o.on "-o", "--bind HOST", "Host to bind to (default: 0.0.0.0)" do |host|
