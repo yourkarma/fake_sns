@@ -19,8 +19,8 @@ module FakeSNS
 
       def new_endpoint
         arn = generate_arn
-        endpoint_attributes = { "arn" => arn, "app_arn" => app_arn, "token" => token }
-        db.topics.create(endpoint_attributes)
+        endpoint_attributes = { "arn" => arn, "platform_application_arn" => app_arn, "token" => token }
+        db.platform_endpoints.create(endpoint_attributes)
         endpoint_attributes
       end
 
@@ -29,7 +29,7 @@ module FakeSNS
       end
 
       def existing_endpoint
-        db.platform_endpoints.find { |t| t["app_arn"] == app_arn && t["token"] == token }
+        db.platform_endpoints.find { |t| t["platform_application_arn"] == app_arn && t["token"] == token }
       end
 
     end
