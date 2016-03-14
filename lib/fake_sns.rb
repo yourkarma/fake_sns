@@ -10,6 +10,8 @@ require "fake_sns/error_response"
 require "fake_sns/database"
 require "fake_sns/storage"
 
+require "fake_sns/platform_endpoint_collection"
+require "fake_sns/platform_endpoint"
 require "fake_sns/topic_collection"
 require "fake_sns/topic"
 require "fake_sns/subscription_collection"
