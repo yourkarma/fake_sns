@@ -28,10 +28,20 @@ module FakeSNS
       @messages ||= MessageCollection.new(store)
     end
 
+    def platform_applications
+      @platform_applications ||= PlatformApplicationCollection.new(store)
+    end
+
+    def platform_endpoints
+      @platform_endpoints ||= PlatformEndpointCollection.new(store)
+    end
+
     def reset
       topics.reset
       subscriptions.reset
       messages.reset
+      platform_applications.reset
+      platform_endpoints.reset
     end
 
     def transaction

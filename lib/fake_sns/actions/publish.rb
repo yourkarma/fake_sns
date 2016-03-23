@@ -12,8 +12,14 @@ module FakeSNS
         if (bytes = message.bytesize) > 262144
           raise InvalidParameterValue, "Too much bytes: #{bytes} > 262144."
         end
-        @topic = db.topics.fetch(topic_arn) do
-          raise InvalidParameterValue, "Unknown topic: #{topic_arn}"
+        if topic_arn.nil?
+          @platform_endpoint = db.platform_endpoints.fetch(target_arn) do
+            raise InvalidParameterValue, "Unknown target: #{target_arn}"
+          end
+        else
+          @topic = db.topics.fetch(topic_arn) do
+            raise InvalidParameterValue, "Unknown topic: #{topic_arn}"
+          end
         end
         @message_id = SecureRandom.uuid
 
