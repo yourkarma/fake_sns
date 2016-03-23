@@ -8,7 +8,7 @@ require 'optparse'
 
 options = {
   :port      => 9292,
-  :host      => "0.0.0.0",
+  :bind      => "0.0.0.0",
   :verbose   => false,
   :daemonize => false,
   :database  => nil,
@@ -25,7 +25,7 @@ parser = OptionParser.new do |o|
   end
 
   o.on "-o", "--bind HOST", "Host to bind to (default: 0.0.0.0)" do |host|
-    options[:host] = host
+    options[:bind] = host
   end
 
   o.on "-s", "--server SERVER", ['thin', 'mongrel', 'webrick'], "Server to use: thin, mongrel or webrick (by default Sinatra chooses the best available)" do |server|
