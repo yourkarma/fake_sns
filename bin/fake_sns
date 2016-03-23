@@ -12,6 +12,7 @@ options = {
   :verbose   => false,
   :daemonize => false,
   :database  => nil,
+  :remove_sqs_queues_url => false,
 }
 
 parser = OptionParser.new do |o|
@@ -30,6 +31,11 @@ parser = OptionParser.new do |o|
 
   o.on "-s", "--server SERVER", ['thin', 'mongrel', 'webrick'], "Server to use: thin, mongrel or webrick (by default Sinatra chooses the best available)" do |server|
     options[:server] = server
+  end
+
+  o.on "-r", "--remove_sqs_queues_url", "Removes Aws::Plugins::SQSQueueUrls" do |queues_url|
+    puts "-- Aws::SQS::Client.remove_plugin(Aws::Plugins::SQSQueueUrls)"
+    options[:remove_sqs_queues_url] = queues_url
   end
 
   o.on "-P", "--pid PIDFILE", "Where to write the pid" do |pid|
@@ -57,6 +63,10 @@ parser = OptionParser.new do |o|
 end
 
 parser.parse!
+
+if options[:remove_sqs_queues_url]
+  Aws::SQS::Client.remove_plugin(Aws::Plugins::SQSQueueUrls)
+end
 
 if options[:daemonize]
   Process.daemon(true, true)
