@@ -45,6 +45,13 @@ module FakeSNS
       end
     end
 
+    delete "/messages" do
+      database.transaction do
+        database.reset_messages
+        200
+      end
+    end
+
     put "/" do
       database.replace(request.body.read)
       200
