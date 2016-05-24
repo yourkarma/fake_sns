@@ -34,6 +34,10 @@ module FakeSNS
       messages.reset
     end
 
+    def reset_messages
+      messages.reset
+    end
+
     def transaction
       store.transaction do
         yield
