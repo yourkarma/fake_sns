@@ -90,7 +90,7 @@ RSpec.describe "Drain messages", :sqs do
   end
 
   def wait_for(&condition)
-    Timeout.timeout 1 do
+    Timeout.timeout 5 do
       until condition.call
         sleep 0.01
       end
