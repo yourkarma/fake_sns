@@ -2,8 +2,8 @@ require "forwardable"
 require "faraday"
 
 module FakeSNS
+  # Delivers messages to the correct target
   class DeliverMessage
-
     extend Forwardable
 
     def self.call(options)
@@ -22,12 +22,13 @@ module FakeSNS
     end
 
     def call
-      method_name = protocol.gsub("-", "_")
-      if protected_methods.map(&:to_s).include?(method_name)
-        send(method_name)
-      else
+      method_name = protocol.tr('-', '_')
+
+      unless protected_methods.map(&:to_s).include?(method_name)
         raise InvalidParameterValue, "Protocol #{protocol} not supported"
       end
+
+      send(method_name)
     end
 
     protected

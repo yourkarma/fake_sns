@@ -1,10 +1,11 @@
 require "json"
 
 module FakeSNS
+  # Message model
   class Message
-
     include Virtus.model
 
+    # Auto-convert JSON str to Hash
     json = Class.new(Virtus::Attribute) do
       def coerce(value)
         value.is_a?(::Hash) ? value : JSON.parse(value)
@@ -23,8 +24,8 @@ module FakeSNS
     attribute :message, json
 
     def message_for_protocol(type)
+      return message if message.is_a?(String)
       message.fetch(type.to_s) { message.fetch("default") }
     end
-
   end
 end
