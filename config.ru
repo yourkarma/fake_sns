@@ -1,3 +1,3 @@
-$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
-require "fake_sns/server"
+$LOAD_PATH.unshift File.expand_path('lib', __dir__)
+require 'fake_sns/server'
 run FakeSNS::Server

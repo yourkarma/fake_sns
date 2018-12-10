@@ -1,11 +1,9 @@
-require "yaml/store"
+require 'yaml/store'
 
 module FakeSNS
-
   class Storage
-
     def self.for(database_filename)
-      if database_filename == ":memory:"
+      if database_filename == ':memory:'
         MemoryStorage.new(database_filename)
       else
         FileStorage.new(database_filename)
@@ -23,15 +21,12 @@ module FakeSNS
     def []=(key, value)
       storage[key] = value
     end
-
   end
 
   class MemoryStorage < Storage
-
     def to_yaml
       storage.to_yaml
     end
-
 
     def storage
       @storage ||= {}
@@ -42,15 +37,13 @@ module FakeSNS
     end
 
     def replace(data)
-      @storage = YAML.load(data)
+      @storage = YAML.safe_load(data)
     end
-
   end
 
   class FileStorage < Storage
-
     def to_yaml
-      storage["x"]
+      storage['x']
       storage.instance_variable_get(:@table).to_yaml
     end
 
@@ -65,11 +58,9 @@ module FakeSNS
     end
 
     def replace(data)
-      File.open(@database_filename, "w:utf-8") do |f|
+      File.open(@database_filename, 'w:utf-8') do |f|
         f.write(data)
       end
     end
-
   end
-
 end

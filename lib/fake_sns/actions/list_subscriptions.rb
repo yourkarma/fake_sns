@@ -1,11 +1,9 @@
 module FakeSNS
   module Actions
     class ListSubscriptions < Action
+      param next_token: 'NextToken'
 
-      param next_token: "NextToken"
-
-      def call
-      end
+      def call; end
 
       def each_subscription
         subscriptions.each do |subscription|
@@ -18,7 +16,6 @@ module FakeSNS
       def subscriptions
         db.subscriptions
       end
-
     end
   end
 end

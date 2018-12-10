@@ -2,7 +2,6 @@ require 'rack/request'
 
 module FakeSNS
   class ShowOutput
-
     def initialize(app)
       @app = app
     end
@@ -15,6 +14,5 @@ module FakeSNS
       puts(*result.last)
       result
     end
-
   end
 end

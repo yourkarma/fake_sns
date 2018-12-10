@@ -1,18 +1,17 @@
 module FakeSNS
   module Actions
     class GetTopicAttributes < Action
+      param arn: 'TopicArn'
 
-      param arn:    "TopicArn"
-
-# TopicArn
-# Owner
-# Policy
-# DisplayName
-# SubscriptionsPending
-# SubscriptionsConfirmed
-# SubscriptionsDeleted
-# DeliveryPolicy
-# EffectiveDeliveryPolicy
+      # TopicArn
+      # Owner
+      # Policy
+      # DisplayName
+      # SubscriptionsPending
+      # SubscriptionsConfirmed
+      # SubscriptionsDeleted
+      # DeliveryPolicy
+      # EffectiveDeliveryPolicy
 
       attr_reader :topic
 
@@ -21,12 +20,11 @@ module FakeSNS
       end
 
       def each_attribute
-        yield "TopicArn", arn
-        %w(DisplayName Policy DeliveryPolicy).each do |key|
-          yield key, topic[key] if topic.has_key?(key)
+        yield 'TopicArn', arn
+        %w[DisplayName Policy DeliveryPolicy].each do |key|
+          yield key, topic[key] if topic.key?(key)
         end
       end
-
     end
   end
 end

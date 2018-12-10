@@ -1,9 +1,8 @@
-require "fake_sns"
-require "sinatra/base"
+require 'fake_sns'
+require 'sinatra/base'
 
 module FakeSNS
   class Server < Sinatra::Base
-
     before do
       content_type :xml
     end
@@ -13,16 +12,16 @@ module FakeSNS
     end
 
     def action
-      params.fetch("Action") { raise MissingAction }
+      params.fetch('Action') { raise MissingAction }
     end
 
-    get "/" do
+    get '/' do
       database.transaction do
         database.to_yaml
       end
     end
 
-    post "/" do
+    post '/' do
       database.transaction do
         begin
           response = database.perform(action, params)
@@ -38,19 +37,19 @@ module FakeSNS
       end
     end
 
-    delete "/" do
+    delete '/' do
       database.transaction do
         database.reset
         200
       end
     end
 
-    put "/" do
+    put '/' do
       database.replace(request.body.read)
       200
     end
 
-    post "/drain" do
+    post '/drain' do
       config = JSON.parse(request.body.read.to_s)
       begin
         database.transaction do
@@ -58,7 +57,7 @@ module FakeSNS
             DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
           end
         end
-      rescue => e
+      rescue StandardError => e
         status 500
         "#{e.class}: #{e}\n\n#{e.backtrace.join("\n")}"
       else
@@ -66,7 +65,7 @@ module FakeSNS
       end
     end
 
-    post "/drain/:message_id" do |message_id|
+    post '/drain/:message_id' do |message_id|
       config = JSON.parse(request.body.read.to_s)
       database.transaction do
         database.each_deliverable_message do |subscription, message|
@@ -77,6 +76,5 @@ module FakeSNS
       end
       200
     end
-
   end
 end

@@ -1,71 +1,71 @@
 #!/usr/bin/env ruby
 
-lib = File.expand_path("../../lib", __FILE__)
+lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'fake_sns'
 require 'optparse'
 
 options = {
-  :port      => 9292,
-  :bind      => "0.0.0.0",
-  :verbose   => false,
-  :daemonize => false,
-  :database  => nil,
+  port: 9292,
+  bind: '0.0.0.0',
+  verbose: false,
+  daemonize: false,
+  database: nil
 }
 
 parser = OptionParser.new do |o|
-
-  o.on "--database FILENAME", "Place to store the database (defaults to ~/.fake_sns.yml)" do |filename|
+  o.on '--database FILENAME', 'Place to store the database (defaults to ~/.fake_sns.yml)' do |filename|
     options[:database] = filename
   end
 
-  o.on "-p", "--port PORT", Integer, "Port to use (default: #{options[:port]})" do |port|
+  o.on '-p', '--port PORT', Integer, "Port to use (default: #{options[:port]})" do |port|
     options[:port] = port
   end
 
-  o.on "-o", "--bind HOST", "Host to bind to (default: 0.0.0.0)" do |host|
+  o.on '-o', '--bind HOST', 'Host to bind to (default: 0.0.0.0)' do |host|
     options[:bind] = host
   end
 
-  o.on "-s", "--server SERVER", ['thin', 'mongrel', 'webrick'], "Server to use: thin, mongrel or webrick (by default Sinatra chooses the best available)" do |server|
+  o.on '-s', '--server SERVER', ['thin', 'mongrel', 'webrick'], 'Server to use: thin, mongrel or webrick (by default Sinatra chooses the best available)' do |server|
     options[:server] = server
   end
 
-  o.on "-P", "--pid PIDFILE", "Where to write the pid" do |pid|
+  o.on '-P', '--pid PIDFILE', 'Where to write the pid' do |pid|
     options[:pid] = pid
   end
 
-  o.on "-d", "--[no-]daemonize", "Detaches the process" do |daemonize|
+  o.on '-d', '--[no-]daemonize', 'Detaches the process' do |daemonize|
     options[:daemonize] = daemonize
   end
 
-  o.on "-v", "--[no]-verbose", "Shows input parameters and output XML" do |verbose|
+  o.on '-v', '--[no]-verbose', 'Shows input parameters and output XML' do |verbose|
     options[:verbose] = verbose
   end
 
-  o.on_tail "--version", "Shows the version" do
+  o.on_tail '--version', 'Shows the version' do
     puts "fake_sns version #{FakeSNS::VERSION}"
     exit
   end
 
-  o.on_tail "-h", "--help", "Shows this help page" do
+  o.on_tail '-h', '--help', 'Shows this help page' do
     puts o
     exit
   end
-
 end
 
 parser.parse!
 
-if options[:daemonize]
-  Process.daemon(true, true)
-end
+Process.daemon(true, true) if options[:daemonize]
 
 if (pid = options[:pid])
   if File.exist?(pid)
     existing_pid = File.open(pid, 'r').read.chomp.to_i
-    running = Process.getpgid(existing_pid) rescue false
+    running = begin
+                Process.getpgid(existing_pid)
+              rescue StandardError
+                false
+              end
     if running
       warn "Error, Process #{existing_pid} already running"
       exit 1

@@ -3,9 +3,8 @@ require_relative 'list_subscriptions'
 module FakeSNS
   module Actions
     class ListSubscriptionsByTopic < ListSubscriptions
-
-      param topic_arn: "TopicArn"
-      param next_token: "NextToken"
+      param topic_arn: 'TopicArn'
+      param next_token: 'NextToken'
 
       def call
         super
@@ -17,9 +16,8 @@ module FakeSNS
       private
 
       def subscriptions
-        super.select { |s| s["topic_arn"] == topic_arn }
+        super.select { |s| s['topic_arn'] == topic_arn }
       end
-
     end
   end
 end

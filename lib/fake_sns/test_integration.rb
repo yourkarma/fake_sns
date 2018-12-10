@@ -1,10 +1,10 @@
-require "yaml"
-require "faraday"
-require "timeout"
+require 'yaml'
+require 'faraday'
+require 'timeout'
 
 module FakeSNS
+  # Test Integration
   class TestIntegration
-
     attr_reader :options
 
     def initialize(options = {})
@@ -29,22 +29,22 @@ module FakeSNS
     end
 
     def start!
-      @pid = Process.spawn(binfile, "-p", port.to_s, "--database", database, :out => out, :err => out)
+      @pid = Process.spawn(binfile, '-p', port.to_s, '--database', database, out: out, err: out)
       wait_until_up
     end
 
     def stop
       if @pid
-        Process.kill("INT", @pid)
+        Process.kill('INT', @pid)
         Process.waitpid(@pid)
         @pid = nil
       else
-        $stderr.puts "FakeSNS is not running"
+        warn 'FakeSNS is not running'
       end
     end
 
     def reset
-      connection.delete("/")
+      connection.delete('/')
     end
 
     def url
@@ -52,29 +52,32 @@ module FakeSNS
     end
 
     def up?
-      @pid && connection.get("/").success?
+      @pid && connection.get('/').success?
     rescue Errno::ECONNREFUSED, Faraday::Error::ConnectionFailed
       false
     end
 
     def data
-      YAML.load(connection.get("/").body)
+      YAML.safe_load(connection.get('/').body)
+    end
+
+    def default
+      {
+        region:             Aws.config[:region],
+        access_key_id:      Aws.config[:credentials].access_key_id,
+        secret_access_key:  Aws.config[:credentials].secret_access_key
+      }
     end
 
     def drain(message_id = nil, options = {})
-      path = message_id ? "/drain/#{message_id}" : "/drain"
-      default = {
-        region:             Aws.config[:region],
-        access_key_id:      Aws.config[:credentials].access_key_id,
-        secret_access_key:  Aws.config[:credentials].secret_access_key,
-      }
+      path = message_id ? "/drain/#{message_id}" : '/drain'
       body = default.merge(options).to_json
       result = connection.post(path, body)
-      if result.success?
-        true
-      else
-        raise "Unable to drain messages: #{result.body}"
+      unless result.success?
+        msg = "Unable to drain messages: #{result.body}"
+        raise msg
       end
+      true
     end
 
     def connection
@@ -84,37 +87,36 @@ module FakeSNS
     private
 
     def database
-      options.fetch(:database) { ":memory:" }
+      options.fetch(:database) { ':memory:' }
     end
 
     def option(key)
       options.fetch(key)
     end
 
-
     def wait_until_up
       Timeout.timeout startup_timeout do
         sleep 0.1 until up?
       end
     rescue Timeout::Error
-      fail "FakeSNS didn't start in time (timeout is #{startup_timeout} seconds)"
+      msg = "FakeSNS timed out (timeout is #{startup_timeout} seconds)"
+      raise msg
     end
 
     def binfile
-      File.expand_path("../../../bin/fake_sns", __FILE__)
+      File.expand_path('../../bin/fake_sns', __dir__)
     end
 
     def out
       if debug?
         :out
       else
-        "/dev/null"
+        '/dev/null'
       end
     end
 
     def debug?
-      ENV["DEBUG"].to_s == "true"
+      ENV['DEBUG'].to_s == 'true'
     end
-
   end
 end

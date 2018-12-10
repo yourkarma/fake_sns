@@ -1,6 +1,6 @@
 module FakeSNS
+  # Subscription Model
   class Subscription
-
     include Virtus.model
 
     attribute :arn, String
@@ -12,8 +12,7 @@ module FakeSNS
     attribute :raw_message_delivery, Boolean
 
     def sqs?
-      protocol == "sqs"
+      protocol == 'sqs'
     end
-
   end
 end

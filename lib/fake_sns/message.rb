@@ -1,4 +1,4 @@
-require "json"
+require 'json'
 
 module FakeSNS
   # Message model
@@ -9,7 +9,7 @@ module FakeSNS
     json = Class.new(Virtus::Attribute) do
       def coerce(value)
         value.is_a?(::Hash) ? value : JSON.parse(value)
-      rescue
+      rescue StandardError
         value
       end
     end
@@ -25,7 +25,7 @@ module FakeSNS
 
     def message_for_protocol(type)
       return message if message.is_a?(String)
-      message.fetch(type.to_s) { message.fetch("default") }
+      message.fetch(type.to_s) { message.fetch('default') }
     end
   end
 end

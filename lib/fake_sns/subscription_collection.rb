@@ -1,21 +1,19 @@
 module FakeSNS
+  # Subscription Collection
   class SubscriptionCollection
-
     include Enumerable
-
-    attr_reader :collection
 
     def initialize(store)
       @store = store
-      @store["subscriptions"] ||= []
+      @store['subscriptions'] ||= []
     end
 
     def collection
-      @store["subscriptions"]
+      @store['subscriptions']
     end
 
     def reset
-      @store["subscriptions"] = []
+      @store['subscriptions'] = []
     end
 
     def each(*args, &block)
@@ -31,12 +29,14 @@ module FakeSNS
     end
 
     def fetch(arn, &default)
-      default ||= -> { raise InvalidParameterValue, "Unknown subscription #{arn}" }
+      default ||= lambda do
+        raise InvalidParameterValue, "Unknown subscription #{arn}"
+      end
+
       found = collection.find do |subscription|
-        subscription["arn"] == arn
+        subscription['arn'] == arn
       end
       found || default.call
     end
-
   end
 end

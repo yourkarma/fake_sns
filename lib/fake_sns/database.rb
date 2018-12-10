@@ -1,13 +1,12 @@
-require "etc"
-require "aws-sdk"
+require 'etc'
+require 'aws-sdk'
 
 module FakeSNS
   class Database
-
     attr_reader :database_filename
 
     def initialize(database_filename)
-      @database_filename = database_filename || File.join(Dir.home, ".fake_sns.yml")
+      @database_filename = database_filename || File.join(Dir.home, '.fake_sns.yml')
     end
 
     def perform(action, params)
@@ -52,9 +51,7 @@ module FakeSNS
       topics.each do |topic|
         subscriptions.each do |subscription|
           messages.each do |message|
-            if message.topic_arn == topic.arn
-              yield subscription, message
-            end
+            yield subscription, message if message.topic_arn == topic.arn
           end
         end
       end
@@ -71,6 +68,5 @@ module FakeSNS
     rescue NameError
       raise InvalidAction, "not implemented: #{action}"
     end
-
   end
 end

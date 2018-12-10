@@ -1,10 +1,9 @@
 module FakeSNS
   module Actions
     class Subscribe < Action
-
-      param endpoint: "Endpoint"
-      param protocol: "Protocol"
-      param topic_arn: "TopicArn"
+      param endpoint: 'Endpoint'
+      param protocol: 'Protocol'
+      param topic_arn: 'TopicArn'
 
       attr_reader :topic
 
@@ -16,28 +15,27 @@ module FakeSNS
       end
 
       def subscription_arn
-        @subscription["arn"]
+        @subscription['arn']
       end
 
       private
 
       def existing_subscription
-        db.subscriptions.to_a.find { |s|
+        db.subscriptions.to_a.find do |s|
           s.topic_arn == topic_arn && s.endpoint == endpoint
-        }
+        end
       end
 
       def new_subscription
         attributes = {
-          "arn"       => "#{topic_arn}:#{SecureRandom.uuid}",
-          "protocol"  => protocol,
-          "endpoint"  => endpoint,
-          "topic_arn" => topic_arn,
+          'arn'       => "#{topic_arn}:#{SecureRandom.uuid}",
+          'protocol'  => protocol,
+          'endpoint'  => endpoint,
+          'topic_arn' => topic_arn
         }
         db.subscriptions.create(attributes)
         attributes
       end
-
     end
   end
 end

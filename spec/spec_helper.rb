@@ -1,18 +1,17 @@
-ENV["RACK_ENV"] ||= 'test'
+ENV['RACK_ENV'] ||= 'test'
 
-require "bundler/setup"
+require 'bundler/setup'
 Bundler.setup
 
-require "verbose_hash_fetch"
-require "aws-sdk"
-require "pry"
-require "fake_sns/test_integration"
-require "fake_sqs/test_integration"
-
+require 'verbose_hash_fetch'
+require 'aws-sdk'
+require 'pry'
+require 'fake_sns/test_integration'
+require 'fake_sqs/test_integration'
 
 Aws.config.update(
-  region: "us-east-1",
-  credentials: Aws::Credentials.new("fake", "fake"),
+  region: 'us-east-1',
+  credentials: Aws::Credentials.new('fake', 'fake')
 )
 # Aws.config(
 #   use_ssl:            false,
@@ -24,38 +23,38 @@ Aws.config.update(
 #   secret_access_key:  "fake secret key",
 # )
 
-db = ENV["SNS_DATABASE"]
-db = ":memory:" if ENV["SNS_DATABASE"].to_s == ""
+db = ENV['SNS_DATABASE']
+db = ':memory:' if ENV['SNS_DATABASE'].to_s == ''
 
 puts "Running tests with database stored in #{db}"
 
 $fake_sns = FakeSNS::TestIntegration.new(
   database:      db,
-  sns_endpoint:  "localhost",
-  sns_port:      9293,
+  sns_endpoint:  'localhost',
+  sns_port:      9293
 )
 
 $fake_sqs = FakeSQS::TestIntegration.new(
-  database:      ":memory:",
-  sqs_endpoint:  "localhost",
-  sqs_port:      4568,
+  database:      ':memory:',
+  sqs_endpoint:  'localhost',
+  sqs_port:      4568
 )
 
 module SpecHelper
   def sns
-    Aws::SNS::Client.new.tap { |client|
-      client.config.endpoint = URI("http://localhost:9293")
-    }
+    Aws::SNS::Client.new.tap do |client|
+      client.config.endpoint = URI('http://localhost:9293')
+    end
   end
+
   def sqs
-    Aws::SQS::Client.new.tap { |client|
-      client.config.endpoint = URI("http://localhost:4568")
-    }
+    Aws::SQS::Client.new.tap do |client|
+      client.config.endpoint = URI('http://localhost:4568')
+    end
   end
 end
 
 RSpec.configure do |config|
-
   config.disable_monkey_patching!
 
   config.before(:each) { $fake_sns.start }
@@ -64,5 +63,4 @@ RSpec.configure do |config|
 
   config.before(:each, :sqs) { $fake_sqs.start }
   config.after(:suite) { $fake_sqs.stop }
-
 end

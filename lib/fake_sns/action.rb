@@ -1,6 +1,5 @@
 module FakeSNS
   class Action
-
     attr_reader :db, :params
 
     def self.param(fields, &block)
@@ -19,6 +18,5 @@ module FakeSNS
     def call
       # override me, if needed
     end
-
   end
 end

@@ -1,7 +1,6 @@
 module FakeSNS
   class ErrorResponse
-
-    DEFAULT_CODE   = "InternalFailure"
+    DEFAULT_CODE   = 'InternalFailure'.freeze
     DEFAULT_STATUS = 500
 
     attr_reader :error, :parameters
@@ -19,16 +18,16 @@ module FakeSNS
       end
     end
 
-    # TODO figure out what this value does
+    # TODO: figure out what this value does
     def type
-      "Sender"
+      'Sender'
     end
 
     def code
       if error.respond_to?(:code)
         error.code
       elsif error.is_a?(FakeSNS::Error)
-        error.class.to_s.split("::").last
+        error.class.to_s.split('::').last
       else
         DEFAULT_CODE
       end
@@ -41,6 +40,5 @@ module FakeSNS
     def request_id
       @request_id ||= SecureRandom.uuid
     end
-
   end
 end

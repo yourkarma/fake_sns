@@ -1,8 +1,7 @@
 module FakeSNS
   module Actions
     class CreateTopic < Action
-
-      param name: "Name"
+      param name: 'Name'
 
       def valid_name?
         name =~ /\A[\w\-]+\z/
@@ -14,7 +13,7 @@ module FakeSNS
       end
 
       def arn
-        topic["arn"]
+        topic['arn']
       end
 
       attr_reader :topic
@@ -23,7 +22,7 @@ module FakeSNS
 
       def new_topic
         arn = generate_arn
-        topic_attributes = { "arn" => arn, "name" => name }
+        topic_attributes = { 'arn' => arn, 'name' => name }
         db.topics.create(topic_attributes)
         topic_attributes
       end
@@ -33,9 +32,8 @@ module FakeSNS
       end
 
       def existing_topic
-        db.topics.find { |t| t["name"] == name }
+        db.topics.find { |t| t['name'] == name }
       end
-
     end
   end
 end

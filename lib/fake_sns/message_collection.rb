@@ -1,19 +1,18 @@
 module FakeSNS
   class MessageCollection
-
     include Enumerable
 
     def initialize(store)
       @store = store
-      @store["messages"] ||= []
+      @store['messages'] ||= []
     end
 
     def collection
-      @store["messages"]
+      @store['messages']
     end
 
     def reset
-      @store["messages"] = []
+      @store['messages'] = []
     end
 
     def each(*args, &block)
@@ -23,7 +22,7 @@ module FakeSNS
     def fetch(arn, &default)
       default ||= -> { raise InvalidParameterValue, "Unknown message #{arn}" }
       found = collection.find do |message|
-        message["arn"] == arn
+        message['arn'] == arn
       end
       found || default.call
     end
@@ -35,6 +34,5 @@ module FakeSNS
     def delete(arn)
       collection.delete(fetch(arn))
     end
-
   end
 end

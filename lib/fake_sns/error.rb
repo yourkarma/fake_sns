@@ -1,5 +1,4 @@
 module FakeSNS
-
   class Error < StandardError
   end
 
@@ -30,5 +29,4 @@ module FakeSNS
 
   # Other errors
   NotFound = error_type 404
-
 end
