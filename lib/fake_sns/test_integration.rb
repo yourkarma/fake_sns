@@ -58,7 +58,7 @@ module FakeSNS
     end
 
     def data
-      YAML.safe_load(connection.get('/').body)
+      YAML.safe_load(connection.get('/').body, [Symbol, Time])
     end
 
     def default

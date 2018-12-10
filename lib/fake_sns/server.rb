@@ -2,6 +2,7 @@ require 'fake_sns'
 require 'sinatra/base'
 
 module FakeSNS
+  # The Sinatra end-points for the fake SNS server
   class Server < Sinatra::Base
     before do
       content_type :xml
