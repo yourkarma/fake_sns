@@ -99,7 +99,8 @@ module FakeSNS
           'x-amz-sns-message-type'     => 'Notification',
           'x-amz-sns-message-id'       => message.id,
           'x-amz-sns-topic-arn'        => message.topic_arn,
-          'x-amz-sns-subscription-arn' => arn
+          'x-amz-sns-subscription-arn' => arn,
+          'Content-Type'               => 'application/json'
         }
       end
     end
