@@ -25,7 +25,12 @@ module FakeSNS
 
     def message_for_protocol(type)
       return message if message.is_a?(String)
+      return message unless message.key?(type.to_s) || message.key?('default')
       message.fetch(type.to_s) { message.fetch('default') }
+    end
+
+    def for?(subscription, topic)
+      topic_arn == topic.arn && topic_arn == subscription.topic_arn
     end
   end
 end

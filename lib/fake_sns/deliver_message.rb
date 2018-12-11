@@ -80,6 +80,7 @@ module FakeSNS
     end
 
     def http_or_https
+      puts "Notifying endpoint #{endpoint}"
       Faraday.new.post(endpoint) do |f|
         f.body = {
           'Type'             => 'Notification',
@@ -93,6 +94,7 @@ module FakeSNS
           'SigningCertURL'   => 'https://sns.us-east-1.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem',
           'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
         }.to_json
+
         f.headers = {
           'x-amz-sns-message-type'     => 'Notification',
           'x-amz-sns-message-id'       => message.id,

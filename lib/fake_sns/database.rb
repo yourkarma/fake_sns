@@ -1,7 +1,9 @@
 require 'etc'
 require 'aws-sdk'
+require 'pp'
 
 module FakeSNS
+  # YAML DB
   class Database
     attr_reader :database_filename
 
@@ -51,7 +53,8 @@ module FakeSNS
       topics.each do |topic|
         subscriptions.each do |subscription|
           messages.each do |message|
-            yield subscription, message if message.topic_arn == topic.arn
+            next unless message.for?(subscription, topic)
+            yield subscription, message
           end
         end
       end
