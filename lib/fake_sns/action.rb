@@ -1,4 +1,5 @@
 module FakeSNS
+  # Action base class
   class Action
     attr_reader :db, :params
 
@@ -10,8 +11,8 @@ module FakeSNS
       end
     end
 
-    def initialize(db, params)
-      @db = db
+    def initialize(database, params)
+      @db = database
       @params = params
     end
 

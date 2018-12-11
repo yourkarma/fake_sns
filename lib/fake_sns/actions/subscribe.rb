@@ -1,5 +1,6 @@
 module FakeSNS
   module Actions
+    # Subscribe SNS action
     class Subscribe < Action
       param endpoint: 'Endpoint'
       param protocol: 'Protocol'
@@ -27,12 +28,16 @@ module FakeSNS
       end
 
       def new_subscription
+        message_attributes = Attributes.new(params)
+
         attributes = {
           'arn'       => "#{topic_arn}:#{SecureRandom.uuid}",
           'protocol'  => protocol,
           'endpoint'  => endpoint,
-          'topic_arn' => topic_arn
+          'topic_arn' => topic_arn,
+          'filter' => message_attributes.fetch('FilterPolicy', {})
         }
+
         db.subscriptions.create(attributes)
         attributes
       end
