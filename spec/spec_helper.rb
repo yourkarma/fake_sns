@@ -8,6 +8,7 @@ require 'aws-sdk'
 require 'pry'
 require 'fake_sns/test_integration'
 require 'fake_sqs/test_integration'
+require 'fake_sns/filter'
 
 Aws.config.update(
   region: 'us-east-1',
@@ -51,6 +52,10 @@ module SpecHelper
     Aws::SQS::Client.new.tap do |client|
       client.config.endpoint = URI('http://localhost:4568')
     end
+  end
+
+  def filter(rules)
+    FakeSNS::Filter.new(rules)
   end
 end
 

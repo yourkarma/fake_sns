@@ -1,3 +1,5 @@
+require 'pp'
+
 module FakeSNS
   # Subscription Model
   class Subscription
@@ -10,9 +12,14 @@ module FakeSNS
     attribute :owner, String
     attribute :delivery_policy, String
     attribute :raw_message_delivery, Boolean
+    attribute :filter, JsonAttribute
 
     def sqs?
       protocol == 'sqs'
+    end
+
+    def accepts?(message)
+      Filter.new(filter).passes?(message)
     end
   end
 end

@@ -10,6 +10,10 @@ require 'fake_sns/error_response'
 require 'fake_sns/database'
 require 'fake_sns/storage'
 
+# Custom Virtus attributes
+require 'fake_sns/json_attribute'
+
+require 'fake_sns/filter'
 require 'fake_sns/topic_collection'
 require 'fake_sns/topic'
 require 'fake_sns/subscription_collection'

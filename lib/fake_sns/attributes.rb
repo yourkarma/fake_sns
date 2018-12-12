@@ -22,8 +22,6 @@ module FakeSNS
     end
 
     def [](key)
-      JSON.parse(raw[key])
-    rescue JSON::ParseError
       raw[key]
     end
 
