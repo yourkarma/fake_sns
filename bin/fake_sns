@@ -43,6 +43,14 @@ parser = OptionParser.new do |o|
     options[:verbose] = verbose
   end
 
+  o.on '-a', '--auto-drain', 'Auto-drains messages on publish' do |auto_drain|
+    options[:auto_drain] = auto_drain
+  end
+
+  o.on '-x', '--purge-on-drain', 'Purges messages on drain' do |purge_on_drain|
+    options[:purge_on_drain] = purge_on_drain
+  end
+
   o.on_tail '--version', 'Shows the version' do
     puts "fake_sns version #{FakeSNS::VERSION}"
     exit
