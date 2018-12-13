@@ -38,6 +38,7 @@ module FakeSNS
           puts(*error.backtrace)
           error_response = ErrorResponse.new(error, params)
           status error_response.status
+          database.abort
           erb :"error.xml", scope: error_response
         end
       end
@@ -86,7 +87,7 @@ module FakeSNS
 
     def purge(message_id)
       return unless settings.purge_on_drain
-      database.message.delete(message.id)
+      database.messages.delete(message_id)
     end
 
     def drain_message(message_id, config = {})

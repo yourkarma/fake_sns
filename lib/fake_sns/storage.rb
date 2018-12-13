@@ -1,6 +1,7 @@
 require 'yaml/store'
 
 module FakeSNS
+  # YAML Storage
   class Storage
     def self.for(database_filename)
       if database_filename == ':memory:'
@@ -23,6 +24,7 @@ module FakeSNS
     end
   end
 
+  # In-memory data store
   class MemoryStorage < Storage
     def to_yaml
       storage.to_yaml
@@ -41,6 +43,7 @@ module FakeSNS
     end
   end
 
+  # Flat-file data store
   class FileStorage < Storage
     def to_yaml
       storage['x']
@@ -53,7 +56,11 @@ module FakeSNS
 
     def transaction
       storage.transaction do
-        yield
+        begin
+          yield
+        rescue StandardError
+          storage.abort
+        end
       end
     end
 

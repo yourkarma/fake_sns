@@ -41,6 +41,10 @@ module FakeSNS
       end
     end
 
+    def abort
+      store.abort
+    end
+
     def replace(data)
       store.replace(data)
     end
