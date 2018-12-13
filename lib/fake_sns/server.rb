@@ -1,5 +1,6 @@
 require 'fake_sns'
 require 'sinatra/base'
+require 'pp'
 
 module FakeSNS
   # The Sinatra end-points for the fake SNS server
@@ -27,6 +28,10 @@ module FakeSNS
         begin
           response = database.perform(action, params)
           status 200
+          if action == 'Publish' && settings.auto_drain
+            puts "Draining message #{response.message_id}"
+            drain_message(response.message_id)
+          end
           erb :"#{response.template}.xml", scope: response
         rescue Exception => error
           p error
@@ -68,10 +73,7 @@ module FakeSNS
               config: config,
               signing_url: signing_url
             )
-
-            next unless settings.purge_on_drain
-
-            database.messages.delete(message.id)
+            purge(message.id)
           end
         end
       rescue StandardError => e
@@ -82,23 +84,29 @@ module FakeSNS
       end
     end
 
+    def purge(message_id)
+      return unless settings.purge_on_drain
+      database.message.delete(message.id)
+    end
+
+    def drain_message(message_id, config = {})
+      database.each_deliverable_message do |subscription, message|
+        next unless message.id == message_id
+        DeliverMessage.call(
+          subscription: subscription,
+          message: message,
+          request: request,
+          config: config,
+          signing_url: signing_url
+        )
+        purge(message.id)
+      end
+    end
+
     post '/drain/:message_id' do |message_id|
       config = JSON.parse(request.body.read.to_s)
       database.transaction do
-        database.each_deliverable_message do |subscription, message|
-          next unless message.id == message_id
-          DeliverMessage.call(
-            subscription: subscription,
-            message: message,
-            request: request,
-            config: config,
-            signing_url: signing_url
-          )
-
-          next unless settings.purge_on_drain
-
-          database.message.delete(message.id)
-        end
+        drain_message(message_id, config)
       end
       200
     end
