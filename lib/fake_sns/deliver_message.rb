@@ -1,5 +1,6 @@
 require 'forwardable'
 require 'faraday'
+require 'base64'
 
 module FakeSNS
   # Delivers messages to the correct target
@@ -10,7 +11,7 @@ module FakeSNS
       new(options).call
     end
 
-    attr_reader :subscription, :message, :config, :request
+    attr_reader :subscription, :message, :config, :request, :signing_url
 
     def_delegators :subscription, :protocol, :endpoint, :arn
 
@@ -19,6 +20,7 @@ module FakeSNS
       @message = options.fetch(:message)
       @request = options.fetch(:request)
       @config = options.fetch(:config)
+      @signing_url = options.fetch(:signing_url, '')
     end
 
     def call
@@ -83,15 +85,15 @@ module FakeSNS
       puts "Notifying endpoint #{endpoint}"
       Faraday.new.post(endpoint) do |f|
         f.body = {
-          'Type'             => 'Notification',
+          'Type'             => message.type,
           'MessageId'        => message.id,
           'TopicArn'         => message.topic_arn,
           'Subject'          => message.subject,
           'Message'          => message_contents,
-          'Timestamp'        => message.received_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          'Timestamp'        => message.timestamp,
           'SignatureVersion' => '1',
-          'Signature'        => 'Fake',
-          'SigningCertURL'   => 'https://sns.us-east-1.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem',
+          'Signature'        => Base64.strict_encode64(message.signature),
+          'SigningCertURL'   => signing_url,
           'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
         }.to_json
 

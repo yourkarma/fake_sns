@@ -50,12 +50,24 @@ module FakeSNS
       200
     end
 
+    def signing_url
+      host = settings.bind
+      port = settings.port
+      "http://#{host}:#{port}/signing-certificate"
+    end
+
     post '/drain' do
       config = JSON.parse(request.body.read.to_s)
       begin
         database.transaction do
           database.each_deliverable_message do |subscription, message|
-            DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
+            DeliverMessage.call(
+              subscription: subscription,
+              message: message,
+              request: request,
+              config: config,
+              signing_url: signing_url
+            )
           end
         end
       rescue StandardError => e
@@ -70,12 +82,21 @@ module FakeSNS
       config = JSON.parse(request.body.read.to_s)
       database.transaction do
         database.each_deliverable_message do |subscription, message|
-          if message.id == message_id
-            DeliverMessage.call(subscription: subscription, message: message, request: request, config: config)
-          end
+          next unless message.id == message_id
+          DeliverMessage.call(
+            subscription: subscription,
+            message: message,
+            request: request,
+            config: config
+          )
         end
       end
       200
+    end
+
+    get '/signing-certificate' do
+      content_type 'text/plain', charset: 'utf-8'
+      File.read('keys/public.cer')
     end
   end
 end

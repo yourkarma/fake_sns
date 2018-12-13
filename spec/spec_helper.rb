@@ -9,6 +9,7 @@ require 'pry'
 require 'fake_sns/test_integration'
 require 'fake_sqs/test_integration'
 require 'fake_sns/filter'
+require 'fake_sns/signature'
 
 Aws.config.update(
   region: 'us-east-1',
@@ -56,6 +57,10 @@ module SpecHelper
 
   def filter(rules)
     FakeSNS::Filter.new(rules)
+  end
+
+  def signature(message)
+    FakeSNS::Signature.new(message)
   end
 end
 

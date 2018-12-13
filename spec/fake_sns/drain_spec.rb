@@ -58,10 +58,10 @@ RSpec.describe 'Drain messages', :sqs do
 
     wait_for do
       begin
-                 Faraday.new('http://localhost:5051').get('/').success?
-               rescue StandardError
-                 false
-               end
+        Faraday.new('http://localhost:5051').get('/').success?
+      rescue StandardError
+        false
+      end
     end
 
     $fake_sns.drain(nil, sqs_endpoint: sqs.config.endpoint.to_s)
@@ -73,9 +73,9 @@ RSpec.describe 'Drain messages', :sqs do
       'Type'             => 'Notification',
       'Message'          => 'hallo',
       'MessageId'        => message_id,
-      'Signature'        => 'Fake',
+      'Signature'        => anything,
       'SignatureVersion' => '1',
-      'SigningCertURL'   => 'https://sns.us-east-1.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem',
+      'SigningCertURL'   => 'http://0.0.0.0:9293/signing-certificate',
       'Subject'          => nil,
       'Timestamp'        => anything,
       'TopicArn'         => topic_arn,

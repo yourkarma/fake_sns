@@ -20,6 +20,7 @@ require 'fake_sns/subscription_collection'
 require 'fake_sns/subscription'
 require 'fake_sns/attributes'
 
+require 'fake_sns/signature'
 require 'fake_sns/message_collection'
 require 'fake_sns/message'
 require 'fake_sns/deliver_message'
