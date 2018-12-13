@@ -1,4 +1,5 @@
 module FakeSNS
+  # DB messages collection
   class MessageCollection
     include Enumerable
 
@@ -19,10 +20,10 @@ module FakeSNS
       collection.map { |item| Message.new(item) }.each(*args, &block)
     end
 
-    def fetch(arn, &default)
+    def fetch(id, &default)
       default ||= -> { raise InvalidParameterValue, "Unknown message #{arn}" }
       found = collection.find do |message|
-        message['arn'] == arn
+        message[:id] == id
       end
       found || default.call
     end
@@ -31,8 +32,8 @@ module FakeSNS
       collection << attributes
     end
 
-    def delete(arn)
-      collection.delete(fetch(arn))
+    def delete(id)
+      collection.delete(fetch(id))
     end
   end
 end

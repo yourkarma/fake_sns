@@ -68,6 +68,10 @@ module FakeSNS
               config: config,
               signing_url: signing_url
             )
+
+            next unless settings.purge_on_drain
+
+            database.messages.delete(message.id)
           end
         end
       rescue StandardError => e
@@ -87,8 +91,13 @@ module FakeSNS
             subscription: subscription,
             message: message,
             request: request,
-            config: config
+            config: config,
+            signing_url: signing_url
           )
+
+          next unless settings.purge_on_drain
+
+          database.message.delete(message.id)
         end
       end
       200

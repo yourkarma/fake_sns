@@ -11,7 +11,9 @@ options = {
   bind: '0.0.0.0',
   verbose: false,
   daemonize: false,
-  database: nil
+  database: nil,
+  auto_drain: false,
+  purge_on_drain: false
 }
 
 parser = OptionParser.new do |o|
