@@ -59,7 +59,7 @@ module FakeSNS
     def signing_url
       host = settings.bind
       port = settings.port
-      "http://#{host}:#{port}/signing-certificate"
+      "http://#{host}:#{port}/signing-certificate.pem"
     end
 
     post '/drain' do
@@ -112,7 +112,7 @@ module FakeSNS
       200
     end
 
-    get '/signing-certificate' do
+    get '/signing-certificate(.pem)?' do
       content_type 'text/plain', charset: 'utf-8'
       File.read('keys/public.cer')
     end
