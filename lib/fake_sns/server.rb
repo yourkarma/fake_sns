@@ -67,6 +67,7 @@ module FakeSNS
       begin
         database.transaction do
           database.each_deliverable_message do |subscription, message|
+            puts [subscription, message]
             DeliverMessage.call(
               subscription: subscription,
               message: message,
@@ -100,8 +101,8 @@ module FakeSNS
           config: config,
           signing_url: signing_url
         )
-        purge(message.id)
       end
+      purge(message_id)
     end
 
     post '/drain/:message_id' do |message_id|
@@ -112,7 +113,7 @@ module FakeSNS
       200
     end
 
-    get '/signing-certificate(.pem)?' do
+    get %r{/signing-certificate(.pem)?} do
       content_type 'text/plain', charset: 'utf-8'
       File.read('keys/public.cer')
     end
