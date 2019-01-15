@@ -75,7 +75,7 @@ RSpec.describe 'Drain messages', :sqs do
       'MessageId'        => message_id,
       'Signature'        => anything,
       'SignatureVersion' => '1',
-      'SigningCertURL'   => 'http://0.0.0.0:9293/signing-certificate',
+      'SigningCertURL'   => 'http://0.0.0.0:9293/signing-certificate.pem',
       'Subject'          => nil,
       'Timestamp'        => anything,
       'TopicArn'         => topic_arn,

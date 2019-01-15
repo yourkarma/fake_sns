@@ -11,6 +11,7 @@ module FakeSNS
     attribute :target_arn, String
     attribute :received_at, DateTime
     attribute :message, JsonAttribute
+    attribute :attrs, Hash
 
     def message_for_protocol(type)
       return message if message.is_a?(String)

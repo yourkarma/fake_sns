@@ -10,8 +10,8 @@ module FakeSNS
     attr_reader :rules
 
     TYPES = {
-      'String' => String,
-      'Number' => Numeric
+      'Number' => Numeric,
+      'String' => String
     }.freeze
 
     def initialize(rules)
@@ -19,22 +19,20 @@ module FakeSNS
     end
 
     def passes?(message)
-      return false unless message.respond_to?(:message)
-      content = message.message
-      rules.all? do |field, rule|
-        return false if content[field].nil?
-        return false unless passes_type?(content, field, rule['Type'])
-        passes_value?(content, field, rule['Value'])
+      return false unless message.respond_to?(:attrs)
+      return false unless fields_match?(message.attrs)
+      return false unless contains_values?(message.attrs)
+      true
+    end
+
+    def fields_match?(attrs)
+      attrs.keys == rules.keys
+    end
+
+    def contains_values?(attrs)
+      attrs.all? do |prop, value|
+        rules[prop].include?(value['Value'])
       end
-    end
-
-    def passes_type?(content, field, type)
-      return false if TYPES[type].nil?
-      content[field].is_a? TYPES[type]
-    end
-
-    def passes_value?(content, field, value)
-      content[field] == value
     end
   end
 end

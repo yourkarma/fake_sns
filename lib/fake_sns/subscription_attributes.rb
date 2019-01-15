@@ -3,7 +3,7 @@ require 'json'
 module FakeSNS
   # Filters out and restructures subscription attributes
   # so that they can be accessed as a tradional hash
-  class Attributes
+  class SubscriptionAttributes
     attr_reader :params
 
     def initialize(params)

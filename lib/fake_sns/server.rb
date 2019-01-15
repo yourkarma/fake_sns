@@ -27,6 +27,7 @@ module FakeSNS
       database.transaction do
         begin
           response = database.perform(action, params)
+          puts "New message: #{params}"
           status 200
           if action == 'Publish' && settings.auto_drain
             puts "Draining message #{response.message_id}"
@@ -38,8 +39,8 @@ module FakeSNS
           puts(*error.backtrace)
           error_response = ErrorResponse.new(error, params)
           status error_response.status
-          database.abort
           erb :"error.xml", scope: error_response
+          #database.abort
         end
       end
     end

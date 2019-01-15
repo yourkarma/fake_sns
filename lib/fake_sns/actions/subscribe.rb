@@ -28,7 +28,7 @@ module FakeSNS
       end
 
       def new_subscription
-        message_attributes = Attributes.new(params)
+        message_attributes = SubscriptionAttributes.new(params)
 
         attributes = {
           'arn'       => "#{topic_arn}:#{SecureRandom.uuid}",
