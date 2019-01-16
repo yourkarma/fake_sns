@@ -10,7 +10,7 @@ module FakeSNS
     attribute :structure, String
     attribute :target_arn, String
     attribute :received_at, DateTime
-    attribute :message, JsonAttribute
+    attribute :message, String
     attribute :attrs, Hash
 
     def message_for_protocol(type)
@@ -21,7 +21,7 @@ module FakeSNS
 
     def raw_message
       return message if message.is_a?(String)
-      message.to_json
+      message
     end
 
     def for?(subscription, topic)
