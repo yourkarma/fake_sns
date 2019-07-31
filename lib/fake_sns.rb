@@ -46,9 +46,11 @@ module FakeSNS
     app
   end
 
-  def self.enable_logging(log)
-    $stdout.reopen(log, 'w:utf-8')
-    $stderr.reopen(log, 'w:utf-8')
+  def self.enable_logging(app, log_filename)
+    log = File.new log_filename, 'a'
+    $stdout.reopen(log)
+    $stderr.reopen(log)
+    $stdout.sync = $stderr.sync = true
     app.enable :logging
   end
 

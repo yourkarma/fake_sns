@@ -13,7 +13,8 @@ options = {
   daemonize: false,
   database: nil,
   auto_drain: false,
-  purge_on_drain: false
+  purge_on_drain: false,
+  log: nil
 }
 
 parser = OptionParser.new do |o|
@@ -41,7 +42,7 @@ parser = OptionParser.new do |o|
     options[:daemonize] = daemonize
   end
 
-  o.on '-v', '--[no]-verbose', 'Shows input parameters and output XML' do |verbose|
+  o.on '-v', '--[no-]verbose', 'Shows input parameters and output XML' do |verbose|
     options[:verbose] = verbose
   end
 
@@ -51,6 +52,10 @@ parser = OptionParser.new do |o|
 
   o.on '-x', '--purge-on-drain', 'Purges messages on drain' do |purge_on_drain|
     options[:purge_on_drain] = purge_on_drain
+  end
+
+  o.on '-L', '--log FILENAME', 'Logs to a file (STDOUT by default)' do |log|
+    options[:log] = log
   end
 
   o.on_tail '--version', 'Shows the version' do
